@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+    <sql id = "Categoria.admin.select">
+    	SELECT *
+		FROM
+		 	categorias cat
+	</sql>
+	
+    <select id = "Categoria.admin.findAll" resultMap = "Categoria" cacheModel="Categoria-Cache">
+    	
+    	<include refid="Categoria.admin.select"/>    	
+    
+    </select>
+ 
+    <select id = "Categoria.admin.findById" resultMap = "Categoria" parameterClass = "HashMap" cacheModel="Categoria-Cache">
+        
+        <include refid="Categoria.admin.select"/>
+        WHERE
+			cat.id = #id#  		
+			
+    </select>
+	
+	<select id = "Categoria.admin.findByIdPadre" resultMap = "Categoria" parameterClass = "HashMap" cacheModel="Categoria-Cache">
+	
+        <include refid="Categoria.admin.select"/>
+		
+		<dynamic prepend="WHERE">
+			<isNull property="id" prepend = "AND">
+				cat.id_padre IS NULL
+			</isNull>
+				
+			<isNotNull property="id" prepend = "AND">
+				cat.id_padre = #id#
+			</isNotNull>
+			
+			ORDER BY cat.nombre
+		</dynamic>	
+		
+    </select>
+	
+	<select id = "Categoria.admin.findByNombre" resultMap = "Categoria" parameterClass = "HashMap" cacheModel="Categoria-Cache">
+       <include refid="Categoria.admin.select"/>
+        WHERE
+			cat.nombre LIKE #nombre#    
+	</select>
+	
+	<insert id = "Categoria.admin.insert" parameterClass="Categoria">
+        INSERT INTO categorias(
+        	 meta_descripcion, 
+        	 meta_keywords,
+        	 descripcion,
+        	 nombre,
+        	 orden,
+        	 url_amigable,
+        	 activa,
+        	 id_padre) 
+        VALUES(
+        	 #metaDescripcion#, 
+        	 #metaKeywords#,
+        	 #descripcion#,
+        	 #nombre#,
+        	 #orden#,
+        	 #urlAmigable#,
+        	 #activa,handler=bol#,
+        	 #idPadre#)
+        	 
+        <selectKey keyProperty="id" resultClass="long">  
+          	SELECT LAST_INSERT_ID() AS id  
+        </selectKey>
+        
+    </insert>
+
+    <update id = "Categoria.admin.update" parameterClass="Categoria">
+    	UPDATE 
+    		categorias 
+    	SET 
+    		meta_descripcion = #metaDescripcion#,
+        	meta_keywords    = #metaKeywords#, 
+    		descripcion  = #descripcion#,
+        	nombre 	     = #nombre#,
+        	orden 		 = #orden#,
+        	url_amigable = #urlAmigable#,
+        	activa 		 = #activa,handler=bol#,
+        	id_padre	 = #idPadre#
+        WHERE 
+        	id = #id#
+    </update>  
+    
+    <update id = "Categoria.admin.cambiarEstadoActivaByIdPadre" parameterClass="HashMap">
+    	UPDATE 
+    		categorias 
+    	SET 
+        	activa = #activa,handler=bol#
+        WHERE 
+        	id_padre = #idPadre#
+    </update>
+    
+    <delete id = "Categoria.admin.delete">
+        DELETE FROM categorias WHERE id = #id#
+    </delete>
+    
+</sqlMap>

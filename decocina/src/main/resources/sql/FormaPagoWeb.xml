@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+    <typeAlias type = "es.cgarcia.decocina.web.model.FormaPago" alias = "FormaPago"/>
+	
+	<typeAlias type = "es.cgarcia.decocina.web.ibatis.BooleanTypeHandlerCallback"  alias="bol"/>
+	
+	<cacheModel id="FormaPago-Cache" type ="LRU" readOnly="true">
+		
+	  	<flushOnExecute statement="FormaPago.admin.insert"/>
+	  	<flushOnExecute statement="FormaPago.admin.update"/>
+	  	<flushOnExecute statement="FormaPago.admin.delete"/>
+	  	
+	</cacheModel>
+		
+	<resultMap class = "FormaPago" id = "FormaPago">
+        <result property = "id" 	   	 column = "fop.id"/>
+        <result property = "nombre"    	 column = "fop.nombre"/>
+        <result property = "descripcion" column = "fop.descripcion"/>
+        <result property = "formula"   	 column = "fop.formula"/>
+        <result property = "comentario"  column = "fop.comentario"/>
+        <result property = "pasoAdicional" column = "fop.paso_adicional" typeHandler = "bol"/>
+        <result property = "url" 		   column = "fop.url"/>
+        <result property = "nombreBoton"   column = "fop.nombre_boton"/>
+        <result property = "test" 		   column = "fop.test"/>
+    </resultMap>  
+        
+   <sql id="FormaPago.web.select">
+    	SELECT 
+    		*    	 	
+    	FROM 
+    	 	formas_pago fop 
+	</sql>
+ 
+    <select id = "FormaPago.web.findById" resultMap = "FormaPago" parameterClass = "HashMap"  cacheModel="FormaPago-Cache">
+        <include refid="FormaPago.web.select"/>
+        WHERE 
+        	fop.id = #id#
+    </select>
+    
+</sqlMap>

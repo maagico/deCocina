@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+    <typeAlias type = "es.cgarcia.decocina.web.model.Direccion" alias = "Direccion"/>
+		
+	<cacheModel id="Direccion-Cache" type ="LRU" readOnly="true">
+		
+		<flushOnExecute statement="Direccion.admin.insert"/>
+	  	<flushOnExecute statement="Direccion.admin.update"/>
+	  
+	</cacheModel>
+		
+	<resultMap class = "Direccion" id = "Direccion">
+        
+        <result property = "id" 	      column = "id"/>
+        <result property = "calle"        column = "calle"/>
+        <result property = "codigoPostal" column = "codigo_postal"/>
+        
+        <result property = "zona.id"     column = "zon.id"/>
+        <result property = "zona.nombre" column = "zon.nombre"/>
+        
+        <result property = "poblacion"   column = "poblacion"/>
+        
+   	</resultMap>
+    
+    <insert id = "Direccion.web.insert">
+    	
+    	INSERT INTO 
+    		direcciones (id, calle, codigo_postal, zona_id, poblacion)
+    	VALUES(
+    		#id#, #calle#, #codigoPostal#,  #zona.id#, #poblacion#	
+    	)
+    	
+    	<selectKey keyProperty="id" resultClass="long">  
+          SELECT LAST_INSERT_ID() AS id  
+        </selectKey>
+    </insert>
+	
+	<update id = "Direccion.web.update">
+		UPDATE direcciones SET 
+			calle 		  = #calle#,
+			codigo_postal = #codigoPostal#,
+			zona_id 	  = #zona.id#,
+			poblacion     = #poblacion#
+		WHERE 
+			id		   	  = #id#
+	</update>  
+    
+    <delete id = "Direccion.web.delete">
+		DELETE FROM direcciones WHERE id = #id#
+	</delete>
+    
+</sqlMap>

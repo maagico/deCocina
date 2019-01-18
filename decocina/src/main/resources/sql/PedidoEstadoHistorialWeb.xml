@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	
+	<typeAlias type = "es.cgarcia.decocina.web.model.PedidoEstadoHistorial" alias = "PedidoEstadoHistorial"/>
+	
+   	<typeAlias type = "es.cgarcia.decocina.web.ibatis.BooleanTypeHandlerCallback"  alias="bol"/>
+	<typeAlias type = "es.cgarcia.decocina.web.ibatis.CalendarTypeHandlerCallback" alias="calendar" />
+		
+	<cacheModel id="PedidoEstadoHistorial-Cache" type ="LRU" readOnly="true">
+	  	
+	  	<flushOnExecute statement="PedidoEstadoHistorial.web.insert"/>
+	  	<flushOnExecute statement="PedidoEstadoHistorial.admin.insert"/>
+	  	<flushOnExecute statement="PedidoEstadoHistorial.admin.delete"/>
+	  	<flushOnExecute statement="PedidoEstadoHistorial.admin.deleteAllByIdPedido"/>
+	  	
+	  	<property name="cache-size" value="1000" />
+	</cacheModel>
+		
+	<resultMap class = "PedidoEstadoHistorial" id = "PedidoEstadoHistorial">
+        
+        <result property = "id" 	   		   column = "peh.id"/>
+        <result property = "pedido.id"    	   column = "peh.pedido_id"/>
+        
+        <result property = "estado.id"    	   column = "est.id"/>
+        <result property = "estado.nombre"     column = "est.nombre"/>
+        
+    	<result property = "fecha"    		   column = "peh.fecha" typeHandler="calendar"/>
+    	<result property = "clienteNotificado" column = "peh.cliente_notificado"/>
+    	<result property = "comentario" 	   column = "peh.comentario"/>
+    	    	
+    </resultMap>  
+	
+	<sql id="PedidoEstadoHistorial.web.select">
+    	SELECT 
+    		*    	 	
+    	FROM 
+    	 	pedido_estado_historial peh, estados est, pedidos ped
+	</sql>
+	
+	<select id = "PedidoEstadoHistorial.web.findById" resultMap = "PedidoEstadoHistorial" parameterClass = "HashMap"  cacheModel="PedidoEstadoHistorial-Cache">
+        <include refid="PedidoEstadoHistorial.web.select"/>
+        WHERE 
+        	peh.estado_id = est.id AND 
+        	peh.pedido_id = ped.id AND
+        	peh.id = #id#
+    </select>
+	
+    <select id = "PedidoEstadoHistorial.web.findByIdPedido" resultMap = "PedidoEstadoHistorial" parameterClass = "HashMap"  cacheModel="PedidoEstadoHistorial-Cache">
+        <include refid="PedidoEstadoHistorial.web.select"/>
+        WHERE 
+        	peh.estado_id = est.id AND 
+        	peh.pedido_id = ped.id AND
+        	ped.id = #idPedido#
+    </select>
+    
+    <select id = "PedidoEstadoHistorial.web.findAllByIdPedido" resultMap = "PedidoEstadoHistorial" parameterClass = "HashMap"  cacheModel="PedidoEstadoHistorial-Cache">
+        <include refid="PedidoEstadoHistorial.web.select"/>
+        WHERE 
+        	peh.estado_id = est.id AND 
+        	peh.pedido_id = ped.id AND
+        	peh.pedido_id = #id#
+        	ORDER BY fecha DESC
+    </select>   
+    
+    <insert id = "PedidoEstadoHistorial.web.insert" >
+        INSERT INTO pedido_estado_historial 
+        	(id,
+        	 pedido_id,
+        	 estado_id,
+        	 fecha,
+        	 cliente_notificado,
+        	 comentario
+        	) 
+        VALUES 
+        	(#id#,
+        	 #pedido.id#,
+        	 #estado.id#,
+        	 #fecha,handler=calendar#,
+        	 #clienteNotificado#,
+        	 #comentario#
+        	)
+        	
+       <selectKey keyProperty="id" resultClass="long">  
+          SELECT LAST_INSERT_ID() AS id  
+        </selectKey>
+        
+     </insert>
+     
+</sqlMap>

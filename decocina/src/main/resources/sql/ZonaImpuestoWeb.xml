@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+    <typeAlias type = "es.cgarcia.decocina.web.model.ZonaImpuesto" alias = "ZonaImpuesto"/>
+		
+	<cacheModel id="ZonaImpuesto-Cache" type ="LRU" readOnly="true">
+		
+	  	<flushOnExecute statement="ZonaImpuesto.admin.insert"/>
+	  	<flushOnExecute statement="ZonaImpuesto.admin.update"/>
+	  	<flushOnExecute statement="ZonaImpuesto.admin.delete"/>
+	  	
+	</cacheModel>
+		
+	<resultMap class = "ZonaImpuesto" id = "ZonaImpuesto">
+        
+        <result property = "id" 	 	 column = "zim.id"/>
+        
+        <result property = "zona.id" 	 column = "zon.id"/>
+        <result property = "zona.nombre" column = "zon.nombre"/>
+        
+        <result property = "impuesto.id"	      column = "imp.id"/>
+        <result property = "impuesto.nombre"	  column = "imp.nombre"/>
+        <result property = "impuesto.valor"	      column = "imp.valor"/>
+        <result property = "impuesto.descripcion" column = "imp.descripcion"/>
+        
+        <result property = "prioridad" column = "zim.prioridad"/>
+    </resultMap>  
+ 	
+ 	<sql id="ZonaImpuesto.web.select">
+    	SELECT     
+			*    
+		FROM     
+			zona_impuestos zim
+			INNER JOIN zonas zon ON (zim.zona_id = zon.id) 
+			INNER JOIN impuestos imp ON (zim.impuesto_id = imp.id)
+	</sql>
+ 	
+ 	<select id = "ZonaImpuesto.web.findByIdZona" resultMap = "ZonaImpuesto" parameterClass = "HashMap"  cacheModel="ZonaImpuesto-Cache">
+        <include refid="ZonaImpuesto.web.select"/>
+        WHERE 
+        	zon.id = #id#
+    </select>
+ 	
+ 	<select id = "ZonaImpuesto.web.findIvaMasPrioridad" resultClass = "Double" parameterClass = "HashMap"  cacheModel="ZonaImpuesto-Cache">
+        SELECT     
+			MIN(zim.prioridad)    
+		FROM     
+			zona_impuestos zim
+			INNER JOIN zonas zon ON (zim.zona_id = zon.id) 
+			INNER JOIN impuestos imp ON (zim.impuesto_id = imp.id)
+        WHERE 
+        	zon.id = #id#
+    </select>
+    
+    <select id = "ZonaImpuesto.web.findImpuestoMasPrioridad" resultMap = "ZonaImpuesto" parameterClass = "HashMap"  cacheModel="ZonaImpuesto-Cache">
+        <include refid="ZonaImpuesto.web.select"/>
+        WHERE 
+        	zon.id = #id# AND 
+        	zim.prioridad = (
+			
+				SELECT     
+					MIN(zim.prioridad)    
+				FROM     
+					zona_impuestos zim
+					INNER JOIN zonas zon ON (zim.zona_id = zon.id) 
+					INNER JOIN impuestos imp ON (zim.impuesto_id = imp.id)
+		        WHERE 
+		        	zon.id = #id#
+		        	
+		    )
+        	LIMIT 1
+    </select>
+</sqlMap>

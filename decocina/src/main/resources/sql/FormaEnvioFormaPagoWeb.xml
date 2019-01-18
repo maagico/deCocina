@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+    <typeAlias type = "es.cgarcia.decocina.web.model.FormaEnvioFormaPago" alias = "FormaEnvioFormaPago"/>
+	
+	<typeAlias type = "es.cgarcia.decocina.web.ibatis.BooleanTypeHandlerCallback"  alias="bol"/>
+	
+	<cacheModel id="FormaEnvioFormaPago-Cache" type ="LRU" readOnly="true">
+		
+		<flushOnExecute statement="FormaEnvioFormaPago.admin.insert"/>
+	  	<flushOnExecute statement="FormaEnvioFormaPago.admin.update"/>
+	  	<flushOnExecute statement="FormaEnvioFormaPago.admin.delete"/>
+	  	
+	  	<flushOnExecute statement="FormaPago.admin.insert"/>
+	  	<flushOnExecute statement="FormaPago.admin.update"/>
+	  	<flushOnExecute statement="FormaPago.admin.delete"/>
+	  	
+	</cacheModel>
+		
+	<resultMap class = "FormaEnvioFormaPago" id = "FormaEnvioFormaPago">
+        
+        <result property = "id" 	 	 column = "fefp.id"/>
+        <result property = "zona.id" 	 column = "zon.id"/>
+        <result property = "zona.nombre" column = "zon.nombre"/>
+        
+        <result property = "formaEnvio.id"	        column = "foe.id"/>
+        <result property = "formaEnvio.nombre"	    column = "foe.nombre"/>
+        <result property = "formaEnvio.descripcion"	column = "foe.descripcion"/>
+        <result property = "formaEnvio.formula"		column = "foe.formula"/>
+        
+        <result property = "formaPago.id" 	       column = "fop.id"/>
+        <result property = "formaPago.nombre" 	   column = "fop.nombre"/>
+        <result property = "formaPago.descripcion" column = "fop.descripcion"/>
+        <result property = "formaPago.formula" 	   column = "fop.formula"/>
+        <result property = "formaPago.comentario"  column = "fop.comentario"/>
+        <result property = "formaPago.pasoAdicional" column = "fop.paso_adicional" typeHandler = "bol"/>
+        <result property = "formaPago.nombreBoton"   column = "fop.nombre_boton"/>
+        <result property = "formaPago.test"  		 column = "fop.test" typeHandler = "bol"/>
+        
+        <result property = "orden" column = "fefp.orden"/>
+        
+    </resultMap>
+        
+</sqlMap>

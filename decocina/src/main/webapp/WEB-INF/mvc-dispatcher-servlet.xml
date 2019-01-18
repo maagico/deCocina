@@ -1,0 +1,161 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:mvc="http://www.springframework.org/schema/mvc" 
+	   xmlns:tx="http://www.springframework.org/schema/tx"
+	   xmlns:aop="http://www.springframework.org/schema/aop"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans     
+        				   http://www.springframework.org/schema/beans/spring-beans.xsd
+        				   http://www.springframework.org/schema/context 
+        				   http://www.springframework.org/schema/context/spring-context.xsd
+        				   http://www.springframework.org/schema/mvc
+        				   http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+        				   http://www.springframework.org/schema/tx 
+        				   http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+        				   http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+ 
+	<context:component-scan base-package="es.cgarcia.decocina"/>
+	
+	<aop:aspectj-autoproxy />
+		
+ 	<mvc:annotation-driven />
+ 	
+ 	<tx:annotation-driven proxy-target-class="true" transaction-manager="transactionManager" />
+ 
+ 	<mvc:resources mapping="/css/**"   location="/WEB-INF/css/"/>
+ 	<mvc:resources mapping="/js/**"    location="/WEB-INF/js/"/>
+ 	<mvc:resources mapping="/less/**"  location="/WEB-INF/less/"/>
+ 	<mvc:resources mapping="/img/**"   location="/WEB-INF/img/"/>
+ 	
+ 	<mvc:interceptors>
+ 		
+ 		<mvc:interceptor>
+     		<mvc:mapping path="/cliente/**" />
+     		
+     		<bean class="es.cgarcia.decocina.web.interceptor.LoginInterceptor" />
+   		</mvc:interceptor>
+ 		
+   		<mvc:interceptor>
+     		<mvc:mapping path="/admin/consola/**" />
+     		
+     		<bean class="es.cgarcia.decocina.admin.interceptor.LoginInterceptor" />
+   		</mvc:interceptor>
+		
+		<mvc:interceptor>
+		
+     		<mvc:mapping path="/**"/>
+     		<mvc:exclude-mapping path="/admin/login"/>
+     		<mvc:exclude-mapping path="/admin/consola/**"/>
+     		<mvc:exclude-mapping path="/img/**"/>
+     		<mvc:exclude-mapping path="/css/**"/>
+     		<mvc:exclude-mapping path="/js/**"/>
+  
+     		<bean class="es.cgarcia.decocina.web.interceptor.ClienteInterceptor" />
+   		</mvc:interceptor>
+		
+		<mvc:interceptor>
+		
+     		<mvc:mapping path="/**"/>
+     		<mvc:exclude-mapping path="/admin/login"/>
+     		<mvc:exclude-mapping path="/admin/consola/**"/>
+     		<mvc:exclude-mapping path="/img/**"/>
+     		<mvc:exclude-mapping path="/css/**"/>
+     		<mvc:exclude-mapping path="/js/**"/>
+  
+     		<bean class="es.cgarcia.decocina.web.interceptor.ConfiguracionInterceptor" />
+   		</mvc:interceptor>
+   		
+   		<mvc:interceptor>
+		
+     		<mvc:mapping path="/admin/**"/>
+     		<mvc:exclude-mapping path="/img/**"/>
+     		<mvc:exclude-mapping path="/css/**"/>
+     		<mvc:exclude-mapping path="/js/**"/>
+  
+     		<bean class="es.cgarcia.decocina.admin.interceptor.ConfiguracionInterceptor" />
+   		</mvc:interceptor>
+   		
+   		<mvc:interceptor>
+		
+     		<mvc:mapping path="/**"/>
+     		<mvc:exclude-mapping path="/admin/login"/>
+     		<mvc:exclude-mapping path="/admin/consola/**"/>
+     		<mvc:exclude-mapping path="/img/**"/>
+     		<mvc:exclude-mapping path="/css/**"/>
+     		<mvc:exclude-mapping path="/js/**"/>
+  
+     		<bean class="es.cgarcia.decocina.web.interceptor.CookieInterceptor" />
+   		</mvc:interceptor>
+   		
+   		<mvc:interceptor>
+		
+     		<mvc:mapping path="/"/>
+     		<mvc:mapping path="/{url:.+}"/>
+  			
+     		<bean class="es.cgarcia.decocina.web.interceptor.TimeInterceptor" />
+   		</mvc:interceptor>
+		 
+	</mvc:interceptors>
+ 	
+ 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+  		<property name="maxUploadSize" value="10240000"/>
+	</bean>
+ 
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean> 
+ 	
+ 	<bean id="confProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+  		<property name="location" value="classpath:configuracion.properties"/>
+	</bean>
+ 	
+ 	<bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+  		<property name="templateLoaderPath" value="classpath:/plantillas/"/>
+  		
+  		<property name="freemarkerSettings">
+			<props>
+				<prop key="default_encoding">UTF-8</prop>
+			</props>
+		</property>
+	</bean>
+ 	
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" >
+		<property name="prefix">
+			<value>/WEB-INF/jsp/</value>
+		</property>
+		<property name="suffix">
+			<value>.jsp</value>
+		</property>
+	</bean>
+ 
+ 	<bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles3.TilesConfigurer">
+        <property name="definitions">
+            <list>
+                <value>/WEB-INF/tiles-definitions.xml</value>
+            </list>
+        </property>
+    </bean>
+ 	
+ 	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+    	<property name="basename" value="classpath:messages"/>
+    	<property name="cacheSeconds" value="5"/>
+	</bean>
+ 	
+ 	<bean id = "profiler" class = "es.cgarcia.decocina.web.aspect.Profiler"/>
+ 	
+ 	<bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+        <property name="configLocation">
+            <value>classpath:sqlMapConfig.xml</value>
+        </property>
+         <property name="dataSource" ref="dataSource" />
+    </bean>
+    
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="org.gjt.mm.mysql.Driver"/>
+        <property name="url" value="jdbc:mysql://127.0.0.1:8889/decocina"/>
+        <property name="username" value="decocina"/>
+        <property name="password" value="decocina"/>
+		<property name="maxActive" value="16"/>
+	</bean>
+ 	
+</beans>

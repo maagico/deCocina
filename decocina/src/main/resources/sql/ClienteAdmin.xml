@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap> 
+	
+	<sql id="Cliente.admin.select">
+    	 SELECT 
+    		*
+    	 FROM 
+    	 	clientes cli 
+    	 	LEFT JOIN direcciones dir ON (cli.direccion_id = dir.id)
+    	 	LEFT JOIN zonas zon ON (dir.zona_id = zon.id)  
+    	 	
+	</sql>
+	
+	<sql id="Cliente.admin.select.count">
+
+		SELECT 
+    		COUNT(*)
+    	 FROM 
+    	 	clientes cli 
+    	 	LEFT JOIN direcciones dir ON (cli.direccion_id = dir.id)
+    	 	LEFT JOIN zonas zon ON (dir.zona_id = zon.id)  
+ 	</sql>
+	
+	<select id = "Cliente.admin.findById" resultMap = "Cliente" parameterClass = "HashMap">
+        <include refid="Cliente.admin.select"/>
+        WHERE 
+        	cli.id = #id#
+    </select>
+    
+    <sql id = "Cliente.admin.findAll.tail">
+		    
+        <isNull property = "isCount">
+	        
+	    	ORDER BY cli.id DESC
+	    	    
+	        <isPropertyAvailable property = "start">
+		        <isNotNull property="start">
+		        	LIMIT #start#, #limit# 
+		        </isNotNull>
+	        </isPropertyAvailable>
+        </isNull>
+	        	
+    </sql>
+    
+    <sql id = "Cliente.admin.findAllBusqueda.tail">
+                
+        <isNotNull property="nombre">
+        	<isNotEmpty property = "nombre">
+        		WHERE cli.nombre LIKE #nombre#
+        	</isNotEmpty>
+        </isNotNull>
+        
+        <isNotNull property="apellidos">
+        	<isNotEmpty property = "apellidos" prepend="AND">
+        		 cli.apellidos LIKE #apellidos#
+        	</isNotEmpty>
+        </isNotNull>
+	    
+	    <isNotNull property="telefono">
+        	<isNotEmpty property = "telefono" prepend="AND">
+        		 cli.telefono = #telefono#
+        	</isNotEmpty>
+        </isNotNull>
+	    
+        <isNull property = "isCount">
+	        
+	        ORDER BY cli.id DESC 
+        	    
+	        <isPropertyAvailable property = "start">
+		        <isNotNull property="start">
+		        	limit #start#, #limit# 
+		        </isNotNull>
+	        </isPropertyAvailable>
+        </isNull>
+	        	
+    </sql>
+	
+	<select id = "Cliente.admin.findAll" resultMap = "Cliente" cacheModel="Cliente-Cache">
+    	
+    	<include refid="Cliente.admin.select"/>
+    	<include refid="Cliente.admin.findAll.tail"/>
+    	
+    </select>
+	
+    <select id = "Cliente.admin.findAllBusqueda" resultMap = "Cliente" cacheModel="Cliente-Cache">
+    	
+    	<include refid="Cliente.admin.select"/>
+    	<include refid="Cliente.admin.findAllBusqueda.tail"/>
+    	
+    </select>
+    
+    <select id = "Cliente.admin.countFindAllBusqueda" resultClass = "java.lang.Long" cacheModel="Cliente-Cache">
+    	
+    	<include refid="Cliente.admin.select.count"/>
+    	<include refid="Cliente.admin.findAllBusqueda.tail"/>
+    </select>
+	
+    <select id = "Cliente.admin.countFindAll" resultClass = "java.lang.Long" cacheModel="Cliente-Cache">
+    	
+    	<include refid="Cliente.admin.select.count"/>
+    	<include refid="Cliente.admin.findAll.tail"/>
+    </select>
+	
+	<select id = "Cliente.admin.findByNombre" resultMap = "Cliente" parameterClass = "HashMap" cacheModel="Cliente-Cache">
+       <include refid="Cliente.admin.select"/>
+        WHERE
+			cli.nombre LIKE #nombre# AND 
+			cli.borrado IS NULL  
+	</select>
+	
+	<insert id = "Cliente.admin.insert">
+				
+    	INSERT INTO clientes (id, nombre, apellidos, email,telefono, password, direccion_id)
+    	VALUES(
+    		#id#, #nombre#, #apellidos#, #email#, #telefono#, #password#, #direccion.id#	
+    	)
+    	<selectKey keyProperty="id" resultClass="long">  
+          SELECT LAST_INSERT_ID() AS id  
+        </selectKey>
+    </insert>
+	
+	<update id="Cliente.admin.update">
+		UPDATE clientes SET 
+			nombre    = #nombre#, 
+			apellidos = #apellidos#,
+			email     = #email#,
+			telefono = #telefono#,
+			direccion_id = #direccion.id#
+		WHERE 
+			id = #id#
+	</update>
+    
+    <delete id = "Cliente.admin.delete">
+        DELETE FROM clientes WHERE id = #id#
+    </delete>
+    
+</sqlMap>

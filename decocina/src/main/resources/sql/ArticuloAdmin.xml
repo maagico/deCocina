@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	
+	<sql id="Articulo.admin.select">
+    	
+		SELECT
+			*
+		FROM 
+			articulos art 
+			LEFT JOIN categorias cat ON (art.categoria_id = cat.id)
+			INNER JOIN impuestos imp ON (art.impuesto_id = imp.id) 
+			LEFT JOIN fabricantes fab ON (art.fabricante_id = fab.id)
+			LEFT JOIN imagenes ima_g ON (art.id = ima_g.articulo_id AND ima_g.tipo = 'G' AND ima_g.principal = 1)
+			LEFT JOIN imagenes ima_p ON (art.id = ima_p.articulo_id AND ima_p.tipo = 'P' AND ima_p.principal = 1)
+			LEFT JOIN imagenes ima_t ON (art.id = ima_t.articulo_id AND ima_t.tipo = 'T' AND ima_t.principal = 1)
+				
+	</sql>
+ 	 			
+    <select id = "Articulo.admin.findAll" resultMap = "Articulo" cacheModel="Articulo-Cache">
+    	<include refid="Articulo.admin.select"/>
+    </select>
+ 
+    <select id = "Articulo.admin.findById" resultMap = "Articulo" parameterClass = "HashMap" cacheModel="Articulo-Cache">
+        <include refid="Articulo.admin.select"/>
+		WHERE
+			 art.id = #id# 
+    </select>
+    
+    <select id = "Articulo.admin.findByIdCategoria" resultMap = "Articulo" parameterClass = "HashMap" cacheModel="Articulo-Cache">
+        <include refid="Articulo.admin.select"/>
+		WHERE
+			 art.categoria_id = #id# 
+		ORDER BY art.orden ASC
+    </select>
+    
+    <select id = "Articulo.admin.findByNombre" resultMap = "Articulo" parameterClass = "HashMap" cacheModel="Articulo-Cache">
+       <include refid="Articulo.admin.select"/>
+        WHERE
+			art.nombre LIKE #nombre#    
+	</select>
+	
+	<select id = "Articulo.admin.findAllUltimos" resultMap = "Articulo" cacheModel="Articulo-Cache">
+    	<include refid="Articulo.admin.select"/>
+    	ORDER BY art.fecha DESC 
+    	LIMIT 0, #limit#
+    </select>
+	
+	<select id = "Articulo.admin.findAllExport" resultMap = "Articulo" cacheModel="Articulo-Cache">
+    	SELECT
+			*
+		FROM 
+			articulos art 
+			LEFT JOIN categorias cat ON (art.categoria_id = cat.id)
+			INNER JOIN impuestos imp ON (art.impuesto_id = imp.id) 
+			LEFT JOIN fabricantes fab ON (art.fabricante_id = fab.id)
+			INNER JOIN imagenes ima_g ON (art.id = ima_g.articulo_id AND ima_g.tipo = 'G' AND ima_g.principal = 1)
+			INNER JOIN imagenes ima_p ON (art.id = ima_p.articulo_id AND ima_p.tipo = 'P' AND ima_p.principal = 1)
+			INNER JOIN imagenes ima_t ON (art.id = ima_t.articulo_id AND ima_t.tipo = 'T' AND ima_t.principal = 1)
+    	ORDER BY art.fecha DESC
+    </select>
+	
+	<select id = "Articulo.admin.existeArticulo" resultMap = "Articulo" parameterClass = "HashMap" cacheModel="Articulo-Cache">
+       <include refid="Articulo.admin.select"/>
+        WHERE
+        
+        	<isNotNull property="id">
+        		art.id != #id# AND
+        	</isNotNull> 
+        	
+        	upper(art.nombre) = upper(#nombre:VARCHAR#)
+		
+	</select>
+    
+    <insert id = "Articulo.admin.insert" parameterClass="Articulo">
+    	INSERT INTO articulos(
+    		nombre,
+    		meta_descripcion,
+    		meta_keywords,
+    		url_amigable,
+    		descripcion,
+    		fabricante_id,
+    		categoria_id,
+    		precio,
+    		oferta,
+    		peso,
+    		impuesto_id,
+    		descripcion_corta,
+    		cantidad,
+    		activo,
+    		orden,
+    		destacado,
+    		visitas,
+    		ventas,
+    		fecha,
+    		fecha_modificacion,
+    		twitter_id)
+    	VALUES(
+    		#nombre#,
+    		#metaDescripcion#,
+    		#metaKeywords#,
+    		#urlAmigable#,
+    		#descripcion#,
+    		#fabricante.id#,
+    		#categoria.id#,
+    		#precio#,
+    		#oferta#,
+    		#peso#,
+    		#impuesto.id#,
+    		#descripcionCorta#,
+    		#cantidad#,
+    		#activo,handler=bol#,
+    		#orden#,
+    		#destacado,handler=bol#,
+    		#visitas#,
+    		#ventas#,
+    		#fecha,handler=calendar#,
+    		#fechaModificacion,handler=calendar#,
+    		#idTwitter#)
+    	
+    	<selectKey keyProperty="id" resultClass="long">  
+          	SELECT LAST_INSERT_ID() AS id  
+        </selectKey>
+        
+    </insert>
+    
+    <update id = "Articulo.admin.update" parameterClass="Articulo">
+    	UPDATE articulos SET 
+    		nombre 			 = #nombre#,
+    		meta_descripcion = #metaDescripcion#,
+    		meta_keywords 	 = #metaKeywords#,
+    		url_amigable 	 = #urlAmigable#,
+    		descripcion 	 = #descripcion#,
+    		fabricante_id 	 = #fabricante.id#,
+    		categoria_id 	 = #categoria.id#,
+    		precio 			 = #precio#,
+    		oferta 			 = #oferta#,
+    		peso 			 = #peso#,
+    		impuesto_id 	 = #impuesto.id#,
+    		descripcion_corta= #descripcionCorta#,
+    		cantidad 	     = #cantidad#,
+    		activo 			 = #activo,handler=bol#,
+    		orden 			 = #orden#,
+    		destacado 		 = #destacado,handler=bol#,
+    		visitas 		 = #visitas#,
+    		fecha 			 = #fecha,handler=calendar#,
+    		fecha_modificacion= #fechaModificacion,handler=calendar#,
+    		twitter_id 		 = #idTwitter#
+    	WHERE 
+    		id = #id#
+    </update>
+    
+    <update id = "Articulo.admin.cambiarEstadoActivaByIdCategoria" parameterClass="HashMap">
+    	UPDATE 
+    		articulos 
+    	SET 
+        	activo = #activo,handler=bol#
+        WHERE 
+        	categoria_id = #idCategoria#
+    </update>
+    
+    <update id = "Articulo.admin.updateFromImport" parameterClass="HashMap">
+    	UPDATE 
+    		articulos 
+    	SET 
+    		cantidad = #cantidad#,
+        	activo = #activo,handler=bol#
+        WHERE 
+        	id = #id#
+    </update>
+    
+    <delete id = "Articulo.admin.delete">
+        DELETE FROM articulos WHERE id = #id#
+    </delete>
+    
+</sqlMap>

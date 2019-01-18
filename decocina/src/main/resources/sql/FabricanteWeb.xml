@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+    <typeAlias type = "es.cgarcia.decocina.web.model.Fabricante" alias = "Fabricante"/>
+		
+	<cacheModel id="Fabricante-Cache" type ="LRU" readOnly="true">
+		
+	  	<flushOnExecute statement="Fabricante.admin.insert"/>
+	  	<flushOnExecute statement="Fabricante.admin.update"/>
+	  	<flushOnExecute statement="Fabricante.admin.delete"/>
+	  	
+	</cacheModel>
+		
+	<resultMap class = "Fabricante" id = "Fabricante">
+        <result property = "id" 		 column = "id"/>
+        <result property = "nombre" 	 column = "nombre"/>
+        <result property = "descripcion" column = "descripcion"/>
+    </resultMap>
+	
+</sqlMap>

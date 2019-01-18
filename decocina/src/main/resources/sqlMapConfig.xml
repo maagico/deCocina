@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMapConfig
+PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+
+	<settings cacheModelsEnabled="false"/>
+
+    <sqlMap resource="sql/AdministradorAdmin.xml"/>
+    
+    <sqlMap resource="sql/CategoriaWeb.xml"/>
+    <sqlMap resource="sql/CategoriaAdmin.xml"/>
+    
+    <sqlMap resource="sql/FabricanteWeb.xml"/>
+    <sqlMap resource="sql/FabricanteAdmin.xml"/>
+
+	<sqlMap resource="sql/ImpuestoWeb.xml"/>
+    <sqlMap resource="sql/ImpuestoAdmin.xml"/>
+    
+    <sqlMap resource="sql/ArticuloWeb.xml"/>
+    <sqlMap resource="sql/ArticuloAdmin.xml"/>
+    
+    <sqlMap resource="sql/ImagenWeb.xml"/>
+    <sqlMap resource="sql/ImagenAdmin.xml"/>
+    
+    <sqlMap resource="sql/FormaEnvioWeb.xml"/>
+    <sqlMap resource="sql/FormaEnvioAdmin.xml"/>
+    
+    <sqlMap resource="sql/FormaPagoWeb.xml"/>
+    <sqlMap resource="sql/FormaPagoAdmin.xml"/>
+    
+    <sqlMap resource="sql/ZonaWeb.xml"/>
+    <sqlMap resource="sql/ZonaAdmin.xml"/>
+    
+    <sqlMap resource="sql/ZonaImpuestoWeb.xml"/>
+    <sqlMap resource="sql/ZonaImpuestoAdmin.xml"/>
+    
+    <sqlMap resource="sql/ZonaFormaEnvioWeb.xml"/>
+    <sqlMap resource="sql/ZonaFormaEnvioAdmin.xml"/>
+    
+    <sqlMap resource="sql/FormaEnvioFormaPagoWeb.xml"/>
+    <sqlMap resource="sql/FormaEnvioFormaPagoAdmin.xml"/>
+    
+    <sqlMap resource="sql/CuponWeb.xml"/>
+    <sqlMap resource="sql/CuponAdmin.xml"/>
+    
+    <sqlMap resource="sql/ClienteWeb.xml"/>
+    <sqlMap resource="sql/ClienteAdmin.xml"/>
+    
+    <sqlMap resource="sql/DireccionWeb.xml"/>
+    <sqlMap resource="sql/DireccionAdmin.xml"/>
+    
+    <sqlMap resource="sql/PedidoWeb.xml"/>
+    <sqlMap resource="sql/PedidoAdmin.xml"/>
+    
+    <sqlMap resource="sql/PedidoEstadoHistorialWeb.xml"/>
+    <sqlMap resource="sql/PedidoEstadoHistorialAdmin.xml"/>
+    
+    <sqlMap resource="sql/ArticuloPedidoWeb.xml"/>
+    <sqlMap resource="sql/ArticuloPedidoAdmin.xml"/>
+    
+    <sqlMap resource="sql/CestaWeb.xml"/>
+    <sqlMap resource="sql/CestaAdmin.xml"/>
+    
+    <sqlMap resource="sql/EstadoWeb.xml"/>
+    <sqlMap resource="sql/EstadoAdmin.xml"/>
+    
+</sqlMapConfig>

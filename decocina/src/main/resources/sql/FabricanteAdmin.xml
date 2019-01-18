@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+    <sql id="Fabricante.admin.select">
+    	SELECT 
+    		*
+		FROM
+			fabricantes fab
+	</sql>
+	
+	<sql id="Fabricante.admin.select.count">
+
+		SELECT 
+			COUNT(*) 
+		FROM 
+			fabricantes fab
+ 	</sql>
+ 
+    <select id = "Fabricante.admin.findById" resultMap = "Fabricante" parameterClass = "HashMap">
+        <include refid="Fabricante.admin.select"/>
+        WHERE 
+        	fab.id = #id#
+    </select>
+    
+    <sql id = "Fabricante.admin.findAll.tail">
+		    
+        <isNull property = "isCount">
+	        
+	    	ORDER BY fab.id DESC
+	    	    
+	        <isPropertyAvailable property = "start">
+		        <isNotNull property="start">
+		        	LIMIT #start#, #limit# 
+		        </isNotNull>
+	        </isPropertyAvailable>
+        </isNull>
+	        	
+    </sql>
+    
+    <sql id = "Fabricante.admin.findAllBusqueda.tail">
+                
+        <isNotNull property="nombre">
+        	<isNotEmpty property = "nombre">
+        		WHERE fab.nombre LIKE #nombre#
+        	</isNotEmpty>
+        </isNotNull>
+	    
+        <isNull property = "isCount">
+	        
+	        ORDER BY fab.id DESC 
+        	    
+	        <isPropertyAvailable property = "start">
+		        <isNotNull property="start">
+		        	limit #start#, #limit# 
+		        </isNotNull>
+	        </isPropertyAvailable>
+        </isNull>
+	        	
+    </sql>
+	
+	<select id = "Fabricante.admin.findAll" resultMap = "Fabricante" cacheModel="Fabricante-Cache">
+    	
+    	<include refid="Fabricante.admin.select"/>
+    	<include refid="Fabricante.admin.findAll.tail"/>
+    	
+    </select>
+	
+    <select id = "Fabricante.admin.findAllBusqueda" resultMap = "Fabricante" cacheModel="Fabricante-Cache">
+    	
+    	<include refid="Fabricante.admin.select"/>
+    	<include refid="Fabricante.admin.findAllBusqueda.tail"/>
+    	
+    </select>
+    
+    <select id = "Fabricante.admin.countFindAllBusqueda" resultClass = "java.lang.Long" cacheModel="Fabricante-Cache">
+    	
+    	<include refid="Fabricante.admin.select.count"/>
+    	<include refid="Fabricante.admin.findAllBusqueda.tail"/>
+    </select>
+	
+    <select id = "Fabricante.admin.countFindAll" resultClass = "java.lang.Long" cacheModel="Fabricante-Cache">
+    	
+    	<include refid="Fabricante.admin.select.count"/>
+    	<include refid="Fabricante.admin.findAll.tail"/>
+    </select>
+	
+	<select id = "Fabricante.admin.findByNombre" resultMap = "Fabricante" parameterClass = "HashMap" cacheModel="Fabricante-Cache">
+       <include refid="Fabricante.admin.select"/>
+        WHERE
+			fab.nombre LIKE #nombre#    
+	</select>
+	
+	<insert id = "Fabricante.admin.insert" parameterClass="Fabricante">
+        INSERT INTO fabricantes(
+        	 nombre,
+        	 descripcion) 
+        VALUES(
+        	 #nombre#,
+        	 #descripcion#)
+        	 
+        <selectKey keyProperty="id" resultClass="long">  
+          	SELECT LAST_INSERT_ID() AS id  
+        </selectKey>
+    </insert>
+
+    <update id = "Fabricante.admin.update" parameterClass="Fabricante">
+    	UPDATE 
+    		fabricantes 
+    	SET 
+    		nombre = #nombre#,
+    		descripcion = #descripcion#
+        WHERE 
+        	id = #id#
+    </update>
+	
+	<delete id = "Fabricante.admin.delete">
+        DELETE FROM fabricantes WHERE id = #id#
+    </delete>
+    
+</sqlMap>

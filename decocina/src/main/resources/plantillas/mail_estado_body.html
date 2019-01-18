@@ -1,0 +1,98 @@
+<html>
+	<head>
+		
+		<meta charset="utf-8">
+		
+	</head>
+	
+	<body>
+		
+		<div>
+			
+			<table style ="width: 100%;font-family: Arial;font-size: 14px;font-weight: bold;">
+			
+				<tr>
+					<td style ="text-align:center;height:40px;font-size: 22px">
+						<a href="http://www.decocina.es" style="text-decoration: none;color: black;">
+							deCocina
+						</a>
+					</td>
+				</tr>
+				
+				<tr style="height:10px;">
+				</tr>
+					
+			</table>
+				
+			<table style ="width: 100%;font-family: Arial;font-size: 14px;color:black">
+			
+				<tr>
+					<td style ="background-color: #f5f5f5;text-align:left;height:40px">
+						<span style="font-size: 18px;margin-left: 5px;font-weight: bold;">Información del pedido</span>
+					</td>
+				</tr>
+				
+				<tr style="height:10px;">
+				</tr>
+				
+				<tr>
+					<td style="text-align:left;">
+						Número de pedido: ${pedido.id} 
+					</td>
+				</tr>
+				<tr>
+					<td style="text-align:left;">
+						Fecha del pedido: ${fechaCreacion}
+					</td>
+				</tr>
+				<tr style="height: 10px;">
+				</tr>
+					
+			</table>
+			
+			<table style ="width: 100%;font-family: Arial;font-size: 14px;color:black">
+			
+				<tr>
+					<td style ="background-color: #f5f5f5;text-align:left;height:40px">
+						<span style="font-size: 18px;margin-left: 5px;font-weight: bold;">Estado del pedido</span>
+					</td>
+				</tr>
+				
+				<tr style="height:10px;">
+				</tr>
+				
+				<tr>
+					<td style="text-align:left">
+						
+						Tu pedido ha sido actualizado al siguiente estado: ${pedido.estadoAdmin.nombre}. <br><br>
+		
+						<#if pedido.comentarioCambioEstado != "">
+						${pedido.comentarioCambioEstado}
+						</#if>
+						
+					</td>
+				</tr>
+				
+			</table>
+			
+			<table style="width: 100%;color:black;margin-top:10px;font-size:14px">
+				<tr>
+					<td style="background-color: #f5f5f5;text-align:left">
+						No respondas a este correo. Ha sido enviado de forma automática.
+					<td>
+				<tr>
+			</table>
+			
+			<table style="width: 100%;color:black;margin-top:10px;font-size:12px">
+				<tr>
+					<td style="text-align:center">
+						deCocina pertenece a la empresa deCocina S.L. CIF: B12345678 <br>
+					Calle del Manojo de Rosas 1, 28015 Madrid
+					</td>
+				</tr>
+			</table>
+			
+		</div>
+		
+	</body>
+</html>

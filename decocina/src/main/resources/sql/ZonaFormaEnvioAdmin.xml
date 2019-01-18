@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+	<sql id="ZonaFormaEnvio.admin.select">
+		SELECT     
+			*    
+		FROM
+			zona_forma_envio zfe,          
+			zonas zon,
+			formas_envio foe
+	</sql>
+	
+    <select id = "ZonaFormaEnvio.admin.findAll" resultMap = "ZonaFormaEnvio"  cacheModel="ZonaFormaEnvio-Cache">
+    	<include refid="ZonaFormaEnvio.admin.select"/>
+    </select>
+ 
+    <select id = "ZonaFormaEnvio.admin.findById" resultMap = "ZonaFormaEnvio" parameterClass = "HashMap"  cacheModel="ZonaFormaEnvio-Cache">
+        <include refid="ZonaFormaEnvio.admin.select"/> 
+        
+        WHERE 
+			zfe.zona_id = zon.id AND
+			zfe.forma_envio_id = foe.id AND
+			zon.id = #id#
+        	
+    </select>
+      
+    <select id = "ZonaFormaEnvio.admin.findByIdZona" resultMap = "ZonaFormaEnvio" cacheModel="ZonaFormaEnvio-Cache">
+	 	<include refid="ZonaFormaEnvio.admin.select"/> 
+			
+		WHERE     
+			zfe.zona_id = zon.id AND
+			zfe.forma_envio_id = foe.id AND
+			zon.id = #id#
+			
+    </select>  
+    
+    <select id = "ZonaFormaEnvio.admin.findByIdZonaAndIdFormaEnvio" resultMap = "ZonaFormaEnvio" cacheModel="ZonaFormaEnvio-Cache">
+	 	<include refid="ZonaFormaEnvio.admin.select"/> 
+			
+		WHERE    
+			zfe.zona_id = zon.id AND
+			zfe.forma_envio_id = foe.id AND
+			foe.id = #idFormaEnvio#
+			zon.id = #idZona#
+			
+    </select>    
+    
+	<insert id = "ZonaFormaEnvio.admin.insert" parameterClass="ZonaFormaEnvio">
+        INSERT INTO zona_forma_envio(
+        	 zona_id,
+        	 forma_envio_id,
+        	 orden) 
+        VALUES(
+        	 #zona.id#,
+        	 #formaEnvio.id#,
+        	 #orden#)
+        	 
+        <selectKey keyProperty="id" resultClass="long">  
+          	SELECT LAST_INSERT_ID() AS id  
+        </selectKey>
+    </insert>
+
+    <update id = "ZonaFormaEnvio.admin.update" parameterClass="ZonaFormaEnvio">
+    	UPDATE 
+    		zona_forma_envio 
+    	SET 
+    		zona_id = #zona.id#,
+    		forma_envio_id = #formaEnvio.id#,
+    		orden = #orden#
+        WHERE 
+        	id = #id#
+    </update>
+    
+    <delete id = "ZonaFormaEnvio.admin.delete">
+        DELETE FROM 
+       		zona_forma_envio 
+       	WHERE 
+       		zona_id = #idZona# AND 
+        	forma_envio_id = #idFormaEnvio#
+    </delete>
+       
+</sqlMap>

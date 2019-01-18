@@ -1,0 +1,13 @@
+<#setting locale="es_ES">
+<#setting number_format="0.##">
+
+{
+	"formasPago":[
+	<#list formasPago as formaPago>
+		{
+			"id":${formaPago.id?string},
+			"nombre":"${formaPago.nombre}"
+		}<#if formaPago_has_next>,</#if>
+	</#list>
+	]
+}

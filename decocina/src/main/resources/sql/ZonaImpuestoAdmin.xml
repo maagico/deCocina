@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+    
+    <sql id="ZonaImpuesto.admin.select">
+    	SELECT     
+			*    
+		FROM     
+			zona_impuestos zim
+			INNER JOIN zonas zon ON (zim.zona_id = zon.id) 
+			INNER JOIN impuestos imp ON (zim.impuesto_id = imp.id)
+	</sql>
+	
+    <select id = "ZonaImpuesto.admin.findAll" resultMap = "ZonaImpuesto"  cacheModel="ZonaImpuesto-Cache">
+    	<include refid="ZonaImpuesto.admin.select"/>
+    </select>
+ 
+    <select id = "ZonaImpuesto.admin.findById" resultMap = "ZonaImpuesto" parameterClass = "HashMap"  cacheModel="ZonaImpuesto-Cache">
+        <include refid="ZonaImpuesto.admin.select"/>
+        WHERE 
+        	zim.id = #id#
+    </select>
+    
+    <select id = "ZonaImpuesto.admin.findByIdZona" resultMap = "ZonaImpuesto" parameterClass = "HashMap"  cacheModel="ZonaImpuesto-Cache">
+        <include refid="ZonaImpuesto.admin.select"/>
+        WHERE 
+        	zon.id = #id#
+    </select>    
+    
+	<insert id = "ZonaImpuesto.admin.insert" parameterClass="ZonaImpuesto">
+        INSERT INTO zona_impuestos(
+        	 zona_id,
+        	 impuesto_id,
+        	 prioridad) 
+        VALUES(
+        	 #zona.id#,
+        	 #impuesto.id#,
+        	 #prioridad#)
+        	 
+        <selectKey keyProperty="id" resultClass="long">  
+          	SELECT LAST_INSERT_ID() AS id  
+        </selectKey>
+    </insert>
+
+    <update id = "ZonaImpuesto.admin.update" parameterClass="ZonaImpuesto">
+    	UPDATE 
+    		zona_impuestos 
+    	SET 
+    		zona_id 	= #zona.id#,
+    		impuesto_id = #impuesto.id#,
+    		prioridad 	= #prioridad#
+        WHERE 
+        	id = #id#
+    </update>
+        
+   	<delete id = "ZonaImpuesto.admin.delete">
+        DELETE FROM zona_impuestos WHERE id = #id#
+    </delete>
+    
+</sqlMap>

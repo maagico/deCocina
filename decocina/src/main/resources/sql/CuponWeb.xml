@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+    <typeAlias type = "es.cgarcia.decocina.web.model.Cupon" alias = "Cupon"/>
+	<typeAlias type = "es.cgarcia.decocina.web.ibatis.CalendarTypeHandlerCallback" alias="calendar" />
+	
+	<cacheModel id="Cupon-Cache" type ="LRU" readOnly="true">
+		
+	  	<flushOnExecute statement="Cupon.admin.insert"/>
+	  	<flushOnExecute statement="Cupon.admin.update"/>
+	  	<flushOnExecute statement="Cupon.admin.delete"/>
+	  
+	</cacheModel>
+		
+	<resultMap class = "Cupon" id = "Cupon">
+        
+        <result property = "id" 			column = "id"/>
+        <result property = "nombre" 		column = "nombre"/>
+        <result property = "descuento" 		column = "descuento"/>
+        <result property = "fechaDesde" 	column = "fecha_desde" typeHandler="calendar"/>
+        <result property = "fechaHasta" 	column = "fecha_hasta" typeHandler="calendar"/>
+        <result property = "precioMinimo" 	column = "precio_minimo"/>
+    	<result property = "numeroUsos" 	column = "numero_usos"/>
+    	<result property = "tipoImporte" 	column = "tipo_importe"/>
+    	<result property = "descripcion" 	column = "descripcion"/>
+    	 
+   	</resultMap>
+	
+	<sql id="Cupon.web.select">
+    	SELECT 
+    		*
+		FROM
+			cupones cup
+	</sql>
+    
+    <select id = "Cupon.web.findById" resultMap = "Cupon" parameterClass = "HashMap">
+        <include refid="Cupon.web.select"/>
+        WHERE 
+        	cup.id = #id#
+    </select>
+    
+    <select id = "Cupon.web.findByCodigo" resultMap = "Cupon" cacheModel="Cupon-Cache">
+    	<include refid="Cupon.web.select"/>
+		WHERE 
+			cup.codigo = #codigo#
+    </select>
+    
+    <select id = "Cupon.web.updateNumeroDeUsos" resultMap = "Cupon" cacheModel="Cupon-Cache">
+    	UPDATE cupones SET 
+			
+			numero_usos = #numeroDeUsos#
+			
+		WHERE 
+			id = #id#
+    </select>
+    
+</sqlMap>

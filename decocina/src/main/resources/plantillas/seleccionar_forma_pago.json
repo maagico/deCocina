@@ -1,0 +1,6 @@
+<#setting locale="es_ES">
+
+{
+	"paso_adicional":"${pasoAdicional?string}",
+	"nombre_boton":"${nombreBoton}"
+}

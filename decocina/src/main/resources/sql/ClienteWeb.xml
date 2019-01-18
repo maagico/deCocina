@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+    <typeAlias type = "es.cgarcia.decocina.web.model.Cliente" alias = "Cliente"/>
+	
+	<typeAlias type = "es.cgarcia.decocina.web.ibatis.BooleanTypeHandlerCallback"  alias="bol"/>
+	<typeAlias type = "es.cgarcia.decocina.web.ibatis.CalendarTypeHandlerCallback" alias="calendar" />
+	
+	<cacheModel id="Cliente-Cache" type ="LRU" readOnly="true">
+		
+		<flushOnExecute statement="Cliente.web.insert"/>
+	  	<flushOnExecute statement="Cliente.web.update"/>
+	  	<flushOnExecute statement="Cliente.web.delete"/>
+		<flushOnExecute statement="Cliente.web.updatePassword"/>
+		<flushOnExecute statement="Cliente.web.updatePasswordToken"/>
+		<flushOnExecute statement="Cliente.web.updateToken"/>
+    		
+		<flushOnExecute statement="Cliente.admin.insert"/>
+	  	<flushOnExecute statement="Cliente.admin.update"/>
+	  	<flushOnExecute statement="Cliente.admin.delete"/>
+	  	
+	</cacheModel>
+		
+	<resultMap class = "Cliente" id = "Cliente">
+        <result property = "id" 	   column = "cli.id"/>
+        <result property = "nombre"    column = "cli.nombre"/>
+        <result property = "apellidos" column = "cli.apellidos"/>
+        <result property = "email" 	   column = "cli.email"/>
+        <result property = "telefono" column = "cli.telefono"/>
+        <result property = "password" column = "cli.password"/>
+                       
+        <result property = "direccion.id" 			column = "dir.id"/>
+    	<result property = "direccion.calle" 		column = "dir.calle"/>
+    	<result property = "direccion.codigoPostal" column = "dir.codigo_postal"/>
+    	
+    	<result property = "direccion.zona.id"      column = "dir.zona_id"/>
+    	<result property = "direccion.zona.nombre"  column = "zon.nombre"/>
+    	<result property = "direccion.poblacion" 	column = "dir.poblacion"/>
+    	
+    	<result property = "tokenRP" column = "cli.token_rp"/>
+    	<result property = "fechaRP" column = "cli.fecha_rp" typeHandler="calendar"/>
+    	
+    	<result property = "borrado" 		column = "cli.borrado" typeHandler = "bol"/>
+    	
+    </resultMap>  
+	
+	<sql id="Cliente.web.select">
+    	 SELECT 
+    		*
+    	 FROM 
+    	 	clientes cli,
+    	 	direcciones dir,
+    	 	zonas zon 
+	</sql>
+ 
+    <select id = "Cliente.web.findById" resultMap = "Cliente" parameterClass = "HashMap" cacheModel="Cliente-Cache">
+        <include refid="Cliente.web.select"/>
+        WHERE 
+        	cli.direccion_id = dir.id AND
+        	zon.id  = dir.zona_id AND  
+        	cli.id = #id# AND 
+        	cli.borrado IS NULL
+    </select>
+    
+    <select id = "Cliente.web.findByEmail" resultMap = "Cliente">
+        <include refid="Cliente.web.select"/>
+        WHERE
+           	cli.direccion_id = dir.id AND
+        	zon.id  = dir.zona_id AND
+        	cli.email = #email#  AND 
+        	cli.borrado IS NULL
+    </select>
+    
+    <select id = "Cliente.web.findByEmailAndPass" resultMap = "Cliente">
+        <include refid="Cliente.web.select"/>
+        WHERE
+        	cli.direccion_id = dir.id AND
+        	zon.id  = dir.zona_id AND 
+        	cli.email = #email# AND 
+        	cli.password = #password#  AND 
+        	cli.borrado IS NULL
+    </select>
+    
+    <select id = "Cliente.web.findByToken" resultMap = "Cliente" parameterClass = "HashMap">
+        <include refid="Cliente.web.select"/>
+        WHERE 
+        	cli.direccion_id = dir.id AND
+        	zon.id  = dir.zona_id AND  
+        	cli.token_rp = #token#  AND 
+        	cli.borrado IS NULL
+    </select>
+    
+    <insert id = "Cliente.web.insert">
+				
+    	INSERT INTO clientes (id, nombre, apellidos, email,telefono, password, direccion_id)
+    	VALUES(
+    		#id#, #nombre#, #apellidos#, #email#, #telefono#, #password#, #direccion.id#	
+    	)
+    	<selectKey keyProperty="id" resultClass="long">  
+          SELECT LAST_INSERT_ID() AS id  
+        </selectKey>
+    </insert>
+	
+	<update id="Cliente.web.update">
+		UPDATE clientes SET 
+			nombre    = #nombre#, 
+			apellidos = #apellidos#,
+			email     = #email#,
+			telefono  = #telefono#,
+			direccion_id = #direccion.id#
+		WHERE 
+			id = #id#
+	</update>
+    
+    <delete id = "Cliente.web.delete">
+        DELETE FROM clientes WHERE id = #id#
+    </delete>       
+         
+    <update id = "Cliente.web.updatePassword">
+        UPDATE clientes SET
+        	password = #password#
+        WHERE
+        	id = #id# 
+    </update>
+    
+     <update id = "Cliente.web.updatePasswordToken">
+        UPDATE clientes SET
+        	password = #password#,
+        	token_rp = null
+        WHERE
+        	token_rp = #token# 
+    </update>
+    
+    <update id = "Cliente.web.updateToken">
+		
+    	UPDATE clientes SET 
+			token_rp = #token#, 
+			fecha_rp = #fecha,handler=calendar#
+		WHERE 
+			id = #id#
+    	
+    </update>
+</sqlMap>

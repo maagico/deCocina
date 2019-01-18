@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+    <sql id="Pedido.admin.select">
+    	 SELECT 
+    		*
+    	 FROM 
+    	 	pedidos ped 
+    	 	INNER JOIN clientes cli ON (ped.cliente_id = cli.id)
+    	 	INNER JOIN pedido_estado_historial peh ON (ped.pedido_estado_historial_id = peh.id)
+    	 	INNER JOIN estados est ON (peh.estado_id = est.id)
+	</sql>
+	
+	<sql id="Pedido.admin.select.count">
+
+		SELECT 
+    		COUNT(*)
+    	 FROM 
+    	 	pedidos ped 
+    	 	INNER JOIN clientes cli ON (ped.cliente_id = cli.id)
+    	 	INNER JOIN pedido_estado_historial peh ON (ped.pedido_estado_historial_id = peh.id)
+    	 	INNER JOIN estados est ON (peh.estado_id = est.id)
+ 	</sql>
+	
+	<select id = "Pedido.admin.findById" resultMap = "Pedido" parameterClass = "HashMap">
+        <include refid="Pedido.admin.select"/>
+        WHERE 
+        	ped.id = #id#
+    </select>
+    
+    <sql id = "Pedido.admin.findAll.tail">
+		    
+        <isNull property = "isCount">
+	        
+	    	ORDER BY ped.id DESC
+	    	    
+	        <isPropertyAvailable property = "start">
+		        <isNotNull property="start">
+		        	LIMIT #start#, #limit# 
+		        </isNotNull>
+	        </isPropertyAvailable>
+        </isNull>
+	        	
+    </sql>
+    
+    <sql id = "Pedido.admin.findAllBusqueda.tail">
+        
+        <dynamic prepend="WHERE">
+          
+	        <isNotNull property="idPedido" prepend = "AND">
+	        	<isNotEmpty property = "idPedido">
+	        		ped.cliente_id = #idPedido#
+	        	</isNotEmpty>
+	        </isNotNull>
+	        
+	        <isNotNull property="nombre" prepend = "AND" removeFirstPrepend="true">
+	        	<isNotEmpty property = "nombre" removeFirstPrepend="true" prepend = "AND">
+	        		ped.nombre_cliente LIKE #nombre#
+	        	</isNotEmpty>
+	        </isNotNull>
+		    
+		    <isNotNull property="telefono" prepend="AND" removeFirstPrepend="true">
+	        	<isNotEmpty property = "telefono" prepend = "AND" removeFirstPrepend="true">
+	        		 ped.telefono = #telefono#
+	        	</isNotEmpty>
+	        </isNotNull>
+		    
+	        <isNull property = "isCount">
+		        
+		        ORDER BY ped.id DESC 
+	        	    
+		        <isPropertyAvailable property = "start">
+			        <isNotNull property="start">
+			        	limit #start#, #limit# 
+			        </isNotNull>
+		        </isPropertyAvailable>
+	        </isNull>
+	    
+	    </dynamic>
+    </sql>
+	
+	<select id = "Pedido.admin.findAllByIdCliente" resultMap = "Pedido" parameterClass = "HashMap">
+        <include refid="Pedido.admin.select"/>
+        WHERE 
+        	ped.cliente_id = #id#
+        	ORDER BY ped.id DESC
+    </select>
+	
+	<select id = "Pedido.admin.findAll" resultMap = "Pedido" cacheModel="Pedido-Cache">
+    	
+    	<include refid="Pedido.admin.select"/>
+    	<include refid="Pedido.admin.findAll.tail"/>
+    	
+    </select>
+	
+    <select id = "Pedido.admin.findAllBusqueda" resultMap = "Pedido" cacheModel="Pedido-Cache">
+    	
+    	<include refid="Pedido.admin.select"/>
+    	<include refid="Pedido.admin.findAllBusqueda.tail"/>
+    	
+    </select>
+    
+    <select id = "Pedido.admin.countFindAllBusqueda" resultClass = "java.lang.Long" cacheModel="Pedido-Cache">
+    	
+    	<include refid="Pedido.admin.select.count"/>
+    	<include refid="Pedido.admin.findAllBusqueda.tail"/>
+    </select>
+	
+    <select id = "Pedido.admin.countFindAll" resultClass = "java.lang.Long" cacheModel="Pedido-Cache">
+    	
+    	<include refid="Pedido.admin.select.count"/>
+    	<include refid="Pedido.admin.findAll.tail"/>
+    </select>
+    
+    <select id = "Pedido.admin.findNumeroPedidosMes" resultClass = "java.lang.Long" cacheModel="Pedido-Cache">
+    	
+    	SELECT 
+    		COUNT(*) 
+    	FROM 
+    		pedidos ped
+    	WHERE 
+    		MONTH(ped.fecha_creacion) = #mes# AND YEAR(ped.fecha_creacion) = #anyo#
+    		 
+    </select>
+    
+    <select id = "Pedido.admin.findSumaImportePedidosMes" resultClass = "java.lang.Double" cacheModel="Pedido-Cache">
+    	
+    	SELECT 
+    		SUM(ped.precio_total) 
+    	FROM 
+    		pedidos ped
+    	WHERE 
+    		MONTH(ped.fecha_creacion) = #mes# AND YEAR(ped.fecha_creacion) = #anyo#
+    		 
+    </select>
+    
+    <update id = "Pedido.admin.borrarDatosPersonales">
+    	UPDATE 
+    		pedidos
+    	SET 
+    		cliente_id = 1,
+    		nombre_cliente = 'Cliente eliminado',
+    		nombre_empresa = 'Cliente eliminado',
+    		telefono = '000000000',
+    		email = 'Cliente eliminado',
+    		calle = 'Cliente eliminado',
+    		borrado = '1'
+    	WHERE
+    		id = #id#
+    </update>
+    
+    <delete id = "Pedido.admin.delete">
+        DELETE FROM pedidos WHERE id = #id#
+    </delete>
+
+</sqlMap>

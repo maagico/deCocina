@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	
+	<sql id="FormaEnvioFormaPago.admin.select">
+    	
+    	SELECT 
+			* 
+		FROM 
+			zonas zon,
+			formas_envio_formas_pago fefp, 
+			formas_envio foe, 
+			formas_pago fop
+	
+	</sql>
+	
+    <select id = "FormaEnvioFormaPago.admin.findById" resultMap = "FormaEnvioFormaPago" parameterClass = "HashMap"  cacheModel="FormaEnvioFormaPago-Cache">
+        <include refid="FormaEnvioFormaPago.admin.select"/>
+        WHERE 
+			fefp.zona_id = zon.id AND 
+			fefp.forma_envio_id = foe.id AND
+			fefp.forma_pago_id = fop.id AND 
+        	fefp.id = #id#
+    </select>
+    
+    <select id = "FormaEnvioFormaPago.admin.findByIdZona" resultMap = "FormaEnvioFormaPago" cacheModel="FormaEnvioFormaPago-Cache">
+    	
+    	<include refid="FormaEnvioFormaPago.admin.select"/>
+    	WHERE 
+			fefp.zona_id = zon.id AND 
+			fefp.forma_envio_id = foe.id AND
+			fefp.forma_pago_id = fop.id AND 
+			zon.id = #id#
+			
+    </select>    
+    
+    <select id = "FormaEnvioFormaPago.admin.findByIdZonaAndFormaEnvio" resultMap = "FormaEnvioFormaPago" cacheModel="FormaEnvioFormaPago-Cache">
+    	
+    	<include refid="FormaEnvioFormaPago.admin.select"/>
+		WHERE 
+			fefp.zona_id = zon.id AND 
+			fefp.forma_envio_id = foe.id AND
+			fefp.forma_pago_id = fop.id AND 
+			fefp.forma_envio_id = #idFormaEnvio# AND 
+			zon.id = #id#
+			
+    </select>
+    
+	<insert id = "FormaEnvioFormaPago.admin.insert" parameterClass="FormaEnvioFormaPago">
+        INSERT INTO formas_envio_formas_pago(
+        	 zona_id,
+        	 forma_envio_id,
+        	 forma_pago_id,
+        	 orden) 
+        VALUES(
+        	 #zona.id#,
+        	 #formaEnvio.id#,
+        	 #formaPago.id#,
+        	 #orden#)
+        	 
+        <selectKey keyProperty="id" resultClass="long">  
+          	SELECT LAST_INSERT_ID() AS id  
+        </selectKey>
+    </insert>
+ 	
+    <update id = "FormaEnvioFormaPago.admin.update" parameterClass="FormaEnvioFormaPago">
+    	UPDATE 
+    		formas_envio_formas_pago 
+    	SET 
+    		zona_id = #zona.id#,
+    		forma_envio_id = #formaEnvio.id#,
+    		forma_pago_id = #formaPago.id#,
+    		orden = #orden#
+        WHERE 
+        	id = #id#
+    </update>
+    
+    <delete id = "FormaEnvioFormaPago.admin.delete">
+        DELETE FROM formas_envio_formas_pago WHERE id = #id#
+    </delete>
+    
+    <delete id = "FormaEnvioFormaPago.admin.deleteFormaEnvio">
+        DELETE FROM 
+        	formas_envio_formas_pago 
+        WHERE 
+        	forma_envio_id = #id# AND 
+        	zona_id = #idZona#
+    </delete>
+        
+</sqlMap>

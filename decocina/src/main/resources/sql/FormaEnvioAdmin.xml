@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap> 
+	
+	<sql id="FormaEnvio.admin.select">
+    	SELECT 
+    		*    	 	
+    	FROM 
+    	 	formas_envio foe
+	</sql>
+ 
+ 	<sql id="FormaEnvio.admin.select.count">
+
+		SELECT 
+			COUNT(*) 
+		FROM 
+			formas_envio foe
+ 	</sql>
+ 	
+    <select id = "FormaEnvio.admin.findById" resultMap = "FormaEnvio" parameterClass = "HashMap">
+        <include refid="FormaEnvio.admin.select"/>
+        WHERE 
+        	foe.id = #id#
+    </select>
+    
+    <sql id = "FormaEnvio.admin.findAll.tail">
+		    
+        <isNull property = "isCount">
+	        
+	    	ORDER BY foe.id DESC
+	    	    
+	        <isPropertyAvailable property = "start">
+		        <isNotNull property="start">
+		        	LIMIT #start#, #limit# 
+		        </isNotNull>
+	        </isPropertyAvailable>
+        </isNull>
+	        	
+    </sql>
+    
+    <sql id = "FormaEnvio.admin.findAllBusqueda.tail">
+                
+        <isNotNull property="nombre">
+        	<isNotEmpty property = "nombre">
+        		WHERE foe.nombre LIKE #nombre#
+        	</isNotEmpty>
+        </isNotNull>
+	    
+        <isNull property = "isCount">
+	        
+	        ORDER BY foe.id DESC 
+        	    
+	        <isPropertyAvailable property = "start">
+		        <isNotNull property="start">
+		        	limit #start#, #limit# 
+		        </isNotNull>
+	        </isPropertyAvailable>
+        </isNull>
+	        	
+    </sql>
+	
+	<select id = "FormaEnvio.admin.findAll" resultMap = "FormaEnvio" cacheModel="FormaEnvio-Cache">
+    	
+    	<include refid="FormaEnvio.admin.select"/>
+    	<include refid="FormaEnvio.admin.findAll.tail"/>
+    	
+    </select>
+	
+    <select id = "FormaEnvio.admin.findAllBusqueda" resultMap = "FormaEnvio" cacheModel="FormaEnvio-Cache">
+    	
+    	<include refid="FormaEnvio.admin.select"/>
+    	<include refid="FormaEnvio.admin.findAllBusqueda.tail"/>
+    	
+    </select>
+    
+    <select id = "FormaEnvio.admin.countFindAllBusqueda" resultClass = "java.lang.Long" cacheModel="FormaEnvio-Cache">
+    	
+    	<include refid="FormaEnvio.admin.select.count"/>
+    	<include refid="FormaEnvio.admin.findAllBusqueda.tail"/>
+    </select>
+	
+    <select id = "FormaEnvio.admin.countFindAll" resultClass = "java.lang.Long" cacheModel="FormaEnvio-Cache">
+    	
+    	<include refid="FormaEnvio.admin.select.count"/>
+    	<include refid="FormaEnvio.admin.findAll.tail"/>
+    </select>
+	
+	<select id = "FormaEnvio.admin.findByNombre" resultMap = "FormaEnvio" parameterClass = "HashMap" cacheModel="FormaEnvio-Cache">
+       <include refid="FormaEnvio.admin.select"/>
+        WHERE
+			foe.nombre LIKE #nombre#    
+	</select>
+    
+    <select id = "FormaEnvio.admin.findAllByIdZona" resultMap = "FormaEnvio" cacheModel="FormaEnvio-Cache">
+    	
+    	SELECT 
+			*
+		FROM 
+			formas_envio foe
+		WHERE 
+			foe.id NOT IN(
+				SELECT     
+					zfe.forma_envio_id    
+				FROM     
+					zona_forma_envio zfe
+				WHERE 
+					zfe.zona_id = #id#
+		)
+		
+    </select>        
+    
+	<insert id = "FormaEnvio.admin.insert" parameterClass="FormaEnvio">
+        INSERT INTO formas_envio(
+        	 nombre,
+        	 descripcion,
+        	 formula) 
+        VALUES(
+        	 #nombre#,
+        	 #descripcion#,
+        	 #formula#)
+        	 
+        <selectKey keyProperty="id" resultClass="long">  
+          	SELECT LAST_INSERT_ID() AS id  
+        </selectKey>
+    </insert>
+
+    <update id = "FormaEnvio.admin.update" parameterClass="FormaEnvio">
+    	UPDATE 
+    		formas_envio 
+    	SET 
+    		nombre 		= #nombre#,
+    		descripcion = #descripcion#,
+    		formula     = #formula#
+        WHERE 
+        	id = #id#
+    </update>
+    
+    <delete id = "FormaEnvio.admin.delete">
+        DELETE FROM formas_envio WHERE id = #id#
+    </delete>
+        
+</sqlMap>

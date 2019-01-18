@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+    <sql id="Estado.admin.select">
+    	SELECT 
+    		*
+		FROM
+			estados est
+	</sql>
+	
+	<sql id="Estado.admin.select.count">
+
+		SELECT 
+			COUNT(*) 
+		FROM 
+			estados est
+ 	</sql>
+ 
+    <select id = "Estado.admin.findById" resultMap = "Estado" parameterClass = "HashMap">
+        <include refid="Estado.admin.select"/>
+        WHERE 
+        	est.id = #id#
+    </select>
+    
+    <sql id = "Estado.admin.findAll.tail">
+		    
+        <isNull property = "isCount">
+	        
+	    	ORDER BY est.id DESC
+	    	    
+	        <isPropertyAvailable property = "start">
+		        <isNotNull property="start">
+		        	LIMIT #start#, #limit# 
+		        </isNotNull>
+	        </isPropertyAvailable>
+        </isNull>
+	        	
+    </sql>
+    
+    <sql id = "Estado.admin.findAllBusqueda.tail">
+                
+        <isNotNull property="nombre">
+        	<isNotEmpty property = "nombre">
+        		WHERE est.nombre LIKE #nombre#
+        	</isNotEmpty>
+        </isNotNull>
+	    
+        <isNull property = "isCount">
+	        
+	        ORDER BY est.id DESC 
+        	    
+	        <isPropertyAvailable property = "start">
+		        <isNotNull property="start">
+		        	limit #start#, #limit# 
+		        </isNotNull>
+	        </isPropertyAvailable>
+        </isNull>
+	        	
+    </sql>
+	
+	<select id = "Estado.admin.findAll" resultMap = "Estado" cacheModel="Estado-Cache">
+    	
+    	<include refid="Estado.admin.select"/>
+    	<include refid="Estado.admin.findAll.tail"/>
+    	
+    </select>
+	
+    <select id = "Estado.admin.findAllBusqueda" resultMap = "Estado" cacheModel="Estado-Cache">
+    	
+    	<include refid="Estado.admin.select"/>
+    	<include refid="Estado.admin.findAllBusqueda.tail"/>
+    	
+    </select>
+    
+    <select id = "Estado.admin.countFindAllBusqueda" resultClass = "java.lang.Long" cacheModel="Estado-Cache">
+    	
+    	<include refid="Estado.admin.select.count"/>
+    	<include refid="Estado.admin.findAllBusqueda.tail"/>
+    
+    </select>
+	
+    <select id = "Estado.admin.countFindAll" resultClass = "java.lang.Long" cacheModel="Estado-Cache">
+    	
+    	<include refid="Estado.admin.select.count"/>
+    	<include refid="Estado.admin.findAll.tail"/>
+    	
+    </select>
+    
+</sqlMap>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+    <typeAlias type = "es.cgarcia.decocina.web.model.FormaEnvio" alias = "FormaEnvio"/>
+		
+	<cacheModel id="FormaEnvio-Cache" type ="LRU" readOnly="true">
+	
+	  	<flushOnExecute statement="FormaEnvio.admin.insert"/>
+	  	<flushOnExecute statement="FormaEnvio.admin.update"/>
+	  	<flushOnExecute statement="FormaEnvio.admin.delete"/>
+	  	
+	</cacheModel>
+		
+	<resultMap class = "FormaEnvio" id = "FormaEnvio">
+        <result property = "id" 	   	 column = "foe.id"/>
+        <result property = "nombre"      column = "foe.nombre"/>
+        <result property = "descripcion" column = "foe.descripcion"/>
+        <result property = "formula"     column = "foe.formula"/>
+    </resultMap>
+      
+    <sql id="FormaEnvio.web.select">
+    	SELECT 
+    		*    	 	
+    	FROM 
+    	 	formas_envio foe
+	</sql>
+ 	
+    <select id = "FormaEnvio.web.findById" resultMap = "FormaEnvio" parameterClass = "HashMap">
+        <include refid="FormaEnvio.web.select"/>
+        WHERE 
+        	foe.id = #id#
+    </select>
+    
+    <select id = "FormaEnvio.web.findAllByIdZona" resultMap = "FormaEnvio" cacheModel="FormaEnvio-Cache">
+    	
+    	SELECT 
+			*
+		FROM 
+			formas_envio foe
+		WHERE 
+			foe.id NOT IN(
+				SELECT     
+					zfe.forma_envio_id    
+				FROM     
+					zona_forma_envio zfe
+				WHERE 
+					zfe.zona_id = #id#
+		)
+		
+    </select> 
+        
+</sqlMap>

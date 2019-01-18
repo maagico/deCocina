@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+    <typeAlias type = "es.cgarcia.decocina.web.model.Imagen" alias = "Imagen"/>
+	
+	<typeAlias type = "es.cgarcia.decocina.web.ibatis.BooleanTypeHandlerCallback"  alias="bol"/>
+	
+	<cacheModel id="Imagen-Cache" type ="LRU" readOnly="true">
+	  	
+	  	<flushOnExecute statement="Imagen.admin.insert"/>
+	  	<flushOnExecute statement="Imagen.admin.update"/>
+	  	<flushOnExecute statement="Imagen.admin.delete"/>
+	  	
+	</cacheModel>
+	
+	<resultMap class = "Imagen" id = "Imagen">
+	
+        <result property = "id" 		column = "ima.id"/>
+        <result property = "idArticulo" column = "ima.articulo_id"/>
+        <result property = "title" 		column = "ima.title"/>
+        <result property = "uri" 		column = "ima.uti"/>
+        <result property = "alt" 		column = "ima.alt"/>
+        <result property = "nombre" 	column = "ima.nombre"/>
+        <result property = "tipo" 		column = "ima.tipo"/>
+        <result property = "principal" 	column = "ima.principal" typeHandler = "bol"/>
+        
+    </resultMap>
+	
+	<sql id = "Imagen.web.select">
+    	SELECT
+    		*
+		FROM
+			imagenes ima
+    </sql>
+	
+	<select id = "Imagen.web.findAll" resultClass = "Imagen">
+    	<include refid="Imagen.web.select"/>
+    </select>
+	
+	<select id = "Imagen.web.findById" resultClass = "Imagen" parameterClass = "HashMap">
+        <include refid="Imagen.web.select"/>
+        WHERE 
+        	ima.id = #id#
+    </select>
+	
+</sqlMap>

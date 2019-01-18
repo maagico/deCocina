@@ -1,0 +1,87 @@
+
+.form-sesion-input{
+	margin-bottom: 25px;
+}
+
+.panel-login{
+	margin-top:50px;
+}
+
+.text-danger {
+    color: #c52130;
+    margin-top: -20px;
+    margin-bottom: 20px;
+}
+
+.error-login {
+    color: #a94442;
+    font-weight: bold;
+}
+
+.nav-derecha-salir{
+	margin-right:40px;
+}
+
+.search-bottom-padding{
+	margin-bottom:15px;
+}
+
+.search-clientes-bottom-padding{
+	margin-bottom:0px;
+}
+
+.form-error{
+	color: #a94442;
+	font-weight: bold;
+}
+
+.categoria-th-ancho-imagen-activa{
+	width:30px;
+}
+
+.categoria-th-ancho-imagen{
+	width:50px;	
+}
+
+.categoria-th-ancho-imagen-articulo{
+	width:100px;
+}
+
+.categoria-th-ancho-id{
+	width:10px;
+}
+
+.form-combo{
+	margin-top:5px;
+	width:289px;
+}
+
+.fileupload{
+	margin-top:5px
+}
+
+.impuestos-margin{
+	margin-top:10px;
+	margin-bottom:10px
+}
+
+.zona-margin-top{
+	margin-top:6px;
+}
+
+.a-desasignar-padre{
+	margin-left:20px
+}
+
+.tabla-formas-pago-border{
+	border: 1px solid #ddd;
+}
+
+.form-input-buscador{
+	margin-bottom:5px;
+}
+
+.color-precio-articulo{
+	color:green; 
+	font-weight: bold;
+}

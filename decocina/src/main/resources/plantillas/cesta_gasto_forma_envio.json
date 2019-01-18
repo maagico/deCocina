@@ -1,0 +1,7 @@
+<#setting locale="es_ES">
+<#setting number_format="0.##">
+
+{
+	"gasto":"${gasto}&euro;",
+	"total":"${total}&euro;"
+}

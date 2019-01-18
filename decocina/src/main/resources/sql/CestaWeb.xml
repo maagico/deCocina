@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+    <typeAlias type = "es.cgarcia.decocina.web.model.Cesta" alias = "Cesta"/>
+	
+	<cacheModel id="Cesta-Cache" type ="LRU" readOnly="true">
+		
+	  	<flushOnExecute statement="Cesta.web.insert"/>
+	  	<flushOnExecute statement="Cesta.web.deleteByIdClienteAndIdArticulo"/>
+	  	<flushOnExecute statement="Cesta.web.deleteByIdCliente"/>
+	  	<flushOnExecute statement="Cesta.web.actualizarCantidad"/>
+	  
+	</cacheModel>
+		
+	<resultMap class = "Cesta" id = "Cesta">
+        
+        <result property = "id"			 column = "id"/>
+        <result property = "cliente.id"  column = "cliente_id"/>
+        <result property = "articulo.id" column = "articulo_id"/>
+        <result property = "cantidad" 	 column = "cantidad"/>
+    	 
+   	</resultMap>
+	
+	<sql id="Cesta.web.select">
+    	SELECT 
+    		*
+		FROM
+			cestas ces,
+			articulos art,
+			clientes cli
+	</sql>
+    
+    <select id = "Cesta.web.findById" resultMap = "Cesta" parameterClass = "HashMap">
+        <include refid="Cesta.web.select"/>
+        WHERE 
+        	ces.id = #id# AND
+        	ces.articulo_id = art.id AND
+        	ces.cliente_id = cli.id
+    </select>
+    
+    <select id = "Cesta.web.findByIdClienteAndIdArticulo" resultMap = "Cesta" parameterClass = "HashMap">
+        <include refid="Cesta.web.select"/>
+        WHERE 
+        	ces.cliente_id = #idCliente# AND
+        	ces.articulo_id =#idArticulo# AND 
+        	ces.articulo_id = art.id AND
+        	ces.cliente_id = cli.id
+    </select>
+    
+   <select id = "Cesta.web.findByIdCliente" resultMap = "Cesta" parameterClass = "HashMap">
+        <include refid="Cesta.web.select"/>
+        WHERE 
+        	ces.cliente_id = #idCliente# AND
+        	ces.articulo_id = art.id AND
+        	ces.cliente_id = cli.id
+    </select>
+    
+    <insert id = "Cesta.web.insert" parameterClass="Cesta">
+    
+        INSERT INTO cestas(
+        	 cliente_id,
+        	 articulo_id,
+        	 cantidad) 
+        VALUES(
+        	 #cliente.id#,
+        	 #articulo.id#,
+        	 #cantidad#)
+        	 
+        <selectKey keyProperty="id" resultClass="long">  
+          	SELECT LAST_INSERT_ID() AS id  
+        </selectKey>
+    
+    </insert>
+    
+    <delete id = "Cesta.web.deleteByIdClienteAndIdArticulo">
+        DELETE FROM 
+        	cestas 
+        WHERE 
+        	cliente_id = #idCliente# AND 
+        	articulo_id = #idArticulo#
+    </delete>
+    
+    <delete id = "Cesta.web.deleteByIdCliente">
+        DELETE FROM 
+        	cestas 
+        WHERE 
+        	cliente_id = #idCliente#
+    </delete>
+    
+    <update id = "Cesta.web.actualizarCantidad">
+		
+		UPDATE cestas SET 
+			cantidad = #cantidad#
+		WHERE 
+			articulo_id = #idArticulo# AND
+			cliente_id = #idCliente#
+	
+	</update>
+	
+</sqlMap>

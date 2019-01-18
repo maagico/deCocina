@@ -1,0 +1,25 @@
+<#setting locale="es_ES">
+<#setting number_format="0.##">
+
+{
+	<#if eliminar?if_exists != ''>
+	"eliminar":"${eliminar?string}",
+	</#if>
+	"total":"${cestaJSON.precioTotal}&euro;",
+	"subTotal":"${cestaJSON.subTotal}&euro;",
+	<#if cestaJSON.gastoFormaEnvio?? && cestaJSON.gastoFormaEnvio != ''>
+		"gastoFormaEnvio":"${cestaJSON.gastoFormaEnvio}&euro;",
+	<#else>
+		"gastoFormaEnvio":"",
+	</#if>
+	"articulos":[
+	<#list cestaJSON.articulos as articulo>
+		{
+			"id":${articulo.id?string},
+			"cantidad":"${articulo.cantidad}",
+			"precio":"${articulo.precio}&euro;",
+			"precioTotal":"${articulo.precioTotal}&euro;"
+		}<#if articulo_has_next>,</#if>
+	</#list>
+	]
+}

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+    <typeAlias type = "es.cgarcia.decocina.web.model.Zona" alias = "Zona"/>
+		
+	<cacheModel id="Zona-Cache" type ="LRU" readOnly="true">
+		
+		<flushOnExecute statement="Zona.admin.insert"/>
+	  	<flushOnExecute statement="Zona.admin.update"/>
+	  	<flushOnExecute statement="Zona.admin.delete"/>
+	  
+	</cacheModel>
+		
+	<resultMap class = "Zona" id = "Zona">
+        <result property = "id" 	   		  column = "zon.id"/>
+        <result property = "nombre"    		  column = "zon.nombre"/>
+        <result property = "heredarFormas" 	  column = "zon.heredar_formas"/>
+        <result property = "activa" 	  	  column = "zon.activa" typeHandler = "bol"/>
+        <result property = "zonaPadre.id"     column = "zpa.id"/>
+        <result property = "zonaPadre.nombre" column = "zpa.nombre"/>
+        <result property = "zonaPadre.heredarFormas" column = "zpa.heredar_formas"/>
+        <result property = "zonaPadre.activa" 	  	 column = "zpa.activa" typeHandler = "bol"/>
+    </resultMap> 
+    
+    <sql id="Zona.web.select">
+    	SELECT     
+			*    
+		FROM     
+			zonas zon     
+			LEFT JOIN zonas zpa ON (zon.zona_padre_id = zpa.id)
+	</sql>
+        
+    <select id = "Zona.web.findById" resultMap = "Zona" parameterClass = "HashMap">
+        <include refid="Zona.web.select"/>
+        WHERE 
+        	zon.id = #id#
+    </select>
+    
+     <select id = "Zona.web.findAllProvincias" resultMap = "Zona" cacheModel="Zona-Cache">
+    	<include refid="Zona.web.select"/>
+    	WHERE 
+    		zon.zona_padre_id = 150    	
+    	ORDER BY
+    		zon.nombre ASC
+    </select>
+    
+    <select id = "Zona.web.findAllProvinciasActivas" resultMap = "Zona" cacheModel="Zona-Cache">
+    	<include refid="Zona.web.select"/>
+    	WHERE 
+    		zon.zona_padre_id = 150 AND 
+    		zon.activa = 1
+    	ORDER BY
+    		zon.nombre ASC
+    </select>
+    
+</sqlMap>

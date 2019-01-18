@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+    <typeAlias type = "es.cgarcia.decocina.admin.model.Administrador" alias = "Administrador"/>
+		
+	<resultMap class = "Administrador" id = "Administrador">
+	
+        <result property = "id" 	  column = "adm.id"/>
+        <result property = "idAlt" 	  column = "adm.id_alt"/>
+        <result property = "usuario"  column = "adm.usuario"/>  
+        <result property = "password" column = "adm.password"/>
+        <result property = "token" 	  column = "adm.token"/>
+        
+    </resultMap>  
+	
+	<sql id="Administrador.admin.select">
+    	SELECT 
+    		*    	 	
+    	FROM 
+    	 	administradores adm
+	</sql>
+
+    <select id = "Administrador.admin.findAll" resultMap = "Administrador">
+    	<include refid="Administrador.admin.select"/>
+    </select>
+ 	
+    <select id = "Administrador.admin.findByUserAndPass" resultMap = "Administrador" parameterClass = "HashMap">
+        <include refid="Administrador.admin.select"/>
+        WHERE 
+        	adm.usuario = #usuario# AND
+        	adm.password = #password#
+    </select>
+    
+    <select id = "Administrador.admin.findByClaveAndToken" resultMap = "Administrador" parameterClass = "HashMap">
+        <include refid="Administrador.admin.select"/>
+        WHERE 
+        	adm.id_alt = #idAlt# AND
+        	adm.token = #token#
+    </select>
+    
+    <update id = "Administrador.admin.update" parameterClass="Administrador">
+    	UPDATE 
+    		administradores 
+    	SET 
+    		token = #token#
+        WHERE 
+        	id = #id#
+    </update>
+      
+</sqlMap>

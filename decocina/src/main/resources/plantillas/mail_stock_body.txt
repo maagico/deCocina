@@ -1,0 +1,1 @@
+Stock del artículo '${nombre}', ${cantidad} unidades disponibles.

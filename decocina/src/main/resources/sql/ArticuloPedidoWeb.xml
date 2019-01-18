@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+    <typeAlias type = "es.cgarcia.decocina.web.model.ArticuloPedido" alias = "ArticuloPedido"/>
+		
+	<cacheModel id="ArticuloPedido-Cache" type ="LRU" readOnly="true">
+		
+	  	<flushOnExecute statement="ArticuloPedido.web.insert"/>
+	  	<flushOnExecute statement="ArticuloPedido.web.deleteAllByIdPedido"/>
+	
+	</cacheModel>
+		
+	<resultMap class = "ArticuloPedido" id = "ArticuloPedido">
+        
+        <result property = "id" 	   	 column = "arp.id"/>
+        <result property = "pedido.id"   column = "arp.pedido_id"/>
+        <result property = "articulo.id" column = "arp.articulo_id"/>
+        <result property = "uri" 		 column = "arp.uri"/>
+    	<result property = "nombre"    	 column = "arp.nombre"/>
+    	<result property = "precio" 	 column = "arp.precio"/>
+    	<result property = "iva" 	     column = "arp.iva"/>
+    	<result property = "cantidad" 	 column = "arp.cantidad"/>
+    	<result property = "precioTotal" column = "arp.precio_total"/>
+    
+    </resultMap>  
+	
+	<sql id="ArticuloPedido.web.select">
+    	SELECT 
+    		*    	 	
+    	FROM 
+    	 	articulo_pedido arp
+	</sql>
+	
+    <select id = "ArticuloPedido.web.findByIdPedido" resultMap = "ArticuloPedido" parameterClass = "HashMap">
+        <include refid="ArticuloPedido.web.select"/>
+        WHERE 
+        	arp.pedido_id = #id#
+    </select>
+        
+    <insert id = "ArticuloPedido.web.insert" >
+        
+        INSERT INTO articulo_pedido 
+        	(id,
+        	 pedido_id,
+        	 articulo_id,
+        	 uri,
+        	 nombre,
+        	 precio,
+        	 iva,
+        	 cantidad,
+        	 precio_total
+        	) 
+        VALUES 
+        	(#id#,
+        	 #pedido.id#,
+        	 #articulo.id#,
+        	 #uri#,
+        	 #nombre#,
+        	 #precio#,
+        	 #iva#,
+        	 #cantidad#,
+        	 #precioTotal#
+        	)
+        	
+       <selectKey keyProperty="id" resultClass="long">  
+          SELECT LAST_INSERT_ID() AS id  
+        </selectKey>
+        
+     </insert>
+        
+     <delete id = "ArticuloPedido.web.deleteAllByIdPedido">
+     	DELETE FROM articulo_pedido WHERE pedido_id = #idPedido#
+     </delete>
+        
+</sqlMap>

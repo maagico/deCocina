@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	
+    <typeAlias type = "es.cgarcia.decocina.web.model.Articulo" alias = "Articulo"/>
+    
+    <typeAlias type = "es.cgarcia.decocina.web.ibatis.BooleanTypeHandlerCallback"  alias="bol"/>
+	<typeAlias type = "es.cgarcia.decocina.web.ibatis.CalendarTypeHandlerCallback" alias="calendar" />
+	
+	<cacheModel id="Articulo-Cache" type ="LRU" readOnly="true">
+		
+	  	<flushOnExecute statement="Imagen.admin.insert"/>
+	  	<flushOnExecute statement="Imagen.admin.update"/>
+	  	
+	  	<flushOnExecute statement="Articulo.admin.insert"/>
+	  	<flushOnExecute statement="Articulo.admin.update"/>
+	  	<flushOnExecute statement="Articulo.admin.cambiarEstadoActivaByIdCategoria"/>
+	  	<flushOnExecute statement="Articulo.admin.delete"/>
+	  	
+	  	<flushOnExecute statement="Articulo.web.actualizarCantidad"/>
+	  	<flushOnExecute statement="Articulo.web.actualizarVenta"/>
+	  	
+	  	<flushOnExecute statement="Articulo.admin.updateFromImport"/>
+
+	</cacheModel>
+	
+	<resultMap class = "Articulo" id = "Articulo">
+	
+    <result property = "id"     	 	   column = "id"/>
+    <result property = "nombre" 	 	   column = "nombre"/>
+    <result property = "metaDescripcion"   column = "art.meta_descripcion"/>
+    	<result property = "metaKeywords" 	   column = "art.meta_keywords"/>
+    	<result property = "urlAmigable" 	   column = "art.url_amigable"/>
+    <result property = "descripcion" 	   column = "descripcion"/>
+        
+    <result property = "fabricante.id" 	   column = "fab.id"/>
+    	<result property = "fabricante.nombre" column = "fab.nombre"/>
+        
+    <result property = "categoria.id" 	   column = "cat.id"/>
+    	<result property = "categoria.nombre"  column = "cat.nombre"/>
+    	<result property = "categoria.orden"   column = "cat.orden"/>
+    	<result property = "categoria.activa"  column = "cat.activa"/> 
+    	<result property = "categoria.urlAmigable" column = "cat.url_amigable"/>
+        
+    <result property = "precio" column = "precio"/>
+    <result property = "oferta" column = "art.oferta"/>
+    <result property = "peso"   column = "peso"/>
+    
+    <result property = "impuesto.id" 		  column = "imp.id"/>
+    	<result property = "impuesto.nombre" 	  column = "imp.nombre"/>
+    	<result property = "impuesto.descripcion" column = "imp.descripcion"/>
+    	<result property = "impuesto.valor" 	  column = "imp.valor"/>
+        
+    	<result property = "descripcionCorta"  column = "descripcion_corta"/>
+    	
+    	<result property = "cantidad" 	 	   column = "art.cantidad"/>
+    	
+    	<result property = "activo" 	 	   column = "art.activo" typeHandler = "bol"/>
+    	<result property = "orden" 	 	   	   column = "art.orden"/>
+    	<result property = "destacado" 	 	   column = "art.destacado" typeHandler = "bol"/>
+    	<result property = "visitas" 	 	   column = "art.visitas"/>
+    	<result property = "ventas" 	 	   column = "art.ventas"/>
+    	
+    	<result property = "fecha" 			   column = "fecha" typeHandler="calendar"/>
+    	<result property = "fechaModificacion" column = "fecha_modificacion" typeHandler="calendar"/>
+    	<result property = "idTwitter"	column = "art.twitter_id"/>    	
+    	    	
+    	<result property = "imagenG.id"     column = "ima_g.id"/>
+    	<result property = "imagenG.idArticulo" column = "ima_g.articulo_id"/>
+    	<result property = "imagenG.title"  column = "ima_g.title"/>
+    	<result property = "imagenG.uri"    column = "ima_g.uri"/>
+    	<result property = "imagenG.alt"    column = "ima_g.alt"/>
+    	<result property = "imagenG.nombre" column = "ima_g.nombre"/>
+    	<result property = "imagenG.tipo"   column = "ima_g.tipo"/>
+    	
+    	<result property = "imagenP.id"     column = "ima_p.id"/>
+    	<result property = "imagenP.idArticulo" column = "ima_p.articulo_id"/>
+    	<result property = "imagenP.title"  column = "ima_p.title"/>
+    	<result property = "imagenP.uri"    column = "ima_p.uri"/>
+    	<result property = "imagenP.alt"    column = "ima_p.alt"/>
+    	<result property = "imagenP.nombre" column = "ima_p.nombre"/>
+    	<result property = "imagenP.tipo"   column = "ima_p.tipo"/>
+    	    	  
+    	<result property = "imagenT.id"     column = "ima_t.id"/>
+    	<result property = "imagenT.idArticulo" column = "ima_t.articulo_id"/>
+    	<result property = "imagenT.title"  column = "ima_t.title"/>
+    	<result property = "imagenT.uri"    column = "ima_t.uri"/>
+    	<result property = "imagenT.alt"    column = "ima_t.alt"/>
+    	<result property = "imagenT.nombre" column = "ima_t.nombre"/>
+    	<result property = "imagenT.tipo"   column = "ima_t.tipo"/>
+    	
+    </resultMap>
+    
+    <sql id="Articulo.web.select">
+    	
+		SELECT
+			*
+		FROM 
+			articulos art 
+			LEFT JOIN (categorias cat, categorias cat_padre) ON 
+			   		  (art.categoria_id = cat.id AND 
+			    	   cat.id_padre = cat_padre.id AND 
+			    	   cat.activa = 1 AND 
+			    	   cat_padre.activa = 1)
+			LEFT JOIN impuestos imp ON (art.impuesto_id = imp.id) 
+			LEFT  JOIN fabricantes fab ON (art.fabricante_id = fab.id)
+			INNER JOIN imagenes ima_g ON (art.id = ima_g.articulo_id AND ima_g.tipo = 'G' AND ima_g.principal = 1)
+			INNER JOIN imagenes ima_p ON (art.id = ima_p.articulo_id AND ima_p.tipo = 'P' AND ima_p.principal = 1)
+			INNER JOIN imagenes ima_t ON (art.id = ima_t.articulo_id AND ima_t.tipo = 'T' AND ima_t.principal = 1)
+				
+	</sql>
+	
+	<sql id="Articulo.web.byCampo.select">
+    	
+    	SELECT    
+			*   
+		FROM     
+			articulos art     
+			LEFT JOIN impuestos imp ON (art.impuesto_id = imp.id)     
+			LEFT  JOIN fabricantes fab ON (art.fabricante_id = fab.id)    
+			INNER JOIN imagenes ima_g ON (art.id = ima_g.articulo_id AND ima_g.tipo = 'G' AND ima_g.principal = 1)    
+			INNER JOIN imagenes ima_p ON (art.id = ima_p.articulo_id AND ima_p.tipo = 'P' AND ima_p.principal = 1)    
+			INNER JOIN imagenes ima_t ON (art.id = ima_t.articulo_id AND ima_t.tipo = 'T' AND ima_t.principal = 1)
+			INNER JOIN (categorias cat, categorias cat_padre) ON 
+					   (art.categoria_id = cat.id AND 
+					    cat.id_padre = cat_padre.id AND 
+					    cat.activa = 1 AND 
+					    cat_padre.activa = 1)
+				
+	</sql>
+ 
+    <select id = "Articulo.web.findById" resultMap = "Articulo" parameterClass = "HashMap" cacheModel="Articulo-Cache">
+        <include refid="Articulo.web.byCampo.select"/>
+		WHERE
+			 art.id = #id#
+    </select>
+    
+    <select id = "Articulo.web.findAll" resultMap = "Articulo" parameterClass = "HashMap" cacheModel="Articulo-Cache">
+        <include refid="Articulo.web.select"/>
+    </select>
+    
+    <select id = "Articulo.web.findByURL" resultMap = "Articulo" parameterClass = "HashMap" cacheModel="Articulo-Cache">
+        <include refid="Articulo.web.byCampo.select"/>
+		WHERE
+			 art.url_amigable = #url# AND  
+			 art.activo = 1 AND
+    		 DATE_FORMAT(art.fecha, '%Y%m%d') <![CDATA[<=]]> DATE_FORMAT(#fecha,handler=calendar#, '%Y%m%d') 
+			 ORDER BY art.orden ASC 
+    </select>
+    
+    <select id = "Articulo.web.findByIdCategoria" resultMap = "Articulo" parameterClass = "HashMap" cacheModel="Articulo-Cache">
+        <include refid="Articulo.web.select"/>
+		WHERE
+			 art.categoria_id = #id# AND
+    		 art.activo = 1 AND
+    		 DATE_FORMAT(art.fecha, '%Y%m%d') <![CDATA[<=]]> DATE_FORMAT(#fecha,handler=calendar#, '%Y%m%d')   
+			 ORDER BY art.orden ASC 
+    </select>
+    
+    <select id = "Articulo.web.findByNombre" resultMap = "Articulo" parameterClass = "HashMap" cacheModel="Articulo-Cache">
+        <include refid="Articulo.web.byCampo.select"/>
+		WHERE
+			 art.nombre LIKE #texto# AND 
+			 art.activo = 1 AND
+    		 DATE_FORMAT(art.fecha, '%Y%m%d') <![CDATA[<=]]> DATE_FORMAT(#fecha,handler=calendar#, '%Y%m%d') 
+			 ORDER BY art.fecha DESC 
+			 LIMIT 0, 30
+    </select>
+    
+    <select id = "Articulo.web.findRelacionadosByIdCategoria" resultMap = "Articulo" cacheModel="Articulo-Cache">
+    	<include refid="Articulo.web.select"/>
+    	WHERE
+    		art.categoria_id = #id# AND 
+			art.activo = 1 AND 
+			art.id <![CDATA[<>]]> #idArticulo# AND 
+			DATE_FORMAT(art.fecha, '%Y%m%d') <![CDATA[<=]]> DATE_FORMAT(#fecha,handler=calendar#, '%Y%m%d')  
+			ORDER BY art.orden ASC
+    </select>
+    
+    <select id = "Articulo.web.findNovedades" resultMap = "Articulo" cacheModel="Articulo-Cache">
+    	<include refid="Articulo.web.select"/>
+    	WHERE
+			 art.activo = 1 AND
+			 DATE_FORMAT(art.fecha, '%Y%m%d') <![CDATA[<=]]> DATE_FORMAT(#fecha,handler=calendar#, '%Y%m%d') 
+			 ORDER BY art.fecha DESC 
+			 <isPropertyAvailable property="limit">
+			 	LIMIT 0, #limit#
+			 </isPropertyAvailable>
+    </select>
+    
+    <select id = "Articulo.web.findMasVendidos" resultMap = "Articulo" cacheModel="Articulo-Cache">
+    	<include refid="Articulo.web.select"/> 
+    	WHERE 
+    	
+	    	<isNotNull property="idCategoria" close="AND">
+	    		art.categoria_id = #idCategoria# 
+			</isNotNull>
+			
+			art.activo = 1 AND 
+			DATE_FORMAT(art.fecha, '%Y%m%d') <![CDATA[<=]]> DATE_FORMAT(#fecha,handler=calendar#, '%Y%m%d') AND 
+			(art.ventas IS NOT NULL AND art.ventas > 0)
+			ORDER BY art.ventas DESC
+	    	
+	    	<isPropertyAvailable property="limit">
+				LIMIT 0, #limit#
+			</isPropertyAvailable>		
+    
+    </select>
+    
+    <select id = "Articulo.web.findMasVistos" resultMap = "Articulo" cacheModel="Articulo-Cache">
+    	<include refid="Articulo.web.select"/>
+    	WHERE 
+	    	<isNotNull property="idCategoria" close="AND">
+	    		art.categoria_id = #idCategoria# 
+			</isNotNull>
+			
+			art.activo = 1 AND 
+			DATE_FORMAT(art.fecha, '%Y%m%d') <![CDATA[<=]]> DATE_FORMAT(#fecha,handler=calendar#, '%Y%m%d')
+			ORDER BY art.visitas DESC  
+	    	
+	    	<isPropertyAvailable property="limit">
+				LIMIT 0, #limit#
+			</isPropertyAvailable>		
+    
+    </select>
+    
+    <select id = "Articulo.web.findVentasRelacionadas" resultMap = "Articulo" cacheModel="Articulo-Cache">
+    	<include refid="Articulo.web.select"/>
+    	INNER JOIN articulo_pedido ape ON ape.articulo_id = art.id 
+		INNER JOIN pedidos ped ON ape.pedido_id = ped.id
+	 	WHERE 
+			pedido_id in(SELECT pedido_id FROM articulo_pedido WHERE articulo_id = #idArticulo#) AND 
+			ape.articulo_id = art.id AND 
+			art.id <![CDATA[<>]]> #idArticulo# AND 
+			art.activo = 1 AND
+			ped.id = pedido_id  
+			GROUP BY ima_g.id, ima_p.id, ima_t.id, ape.id, ape.articulo_id ORDER BY ped.fecha_creacion desc 
+			<isPropertyAvailable property="limit">
+			 	LIMIT 0, #limit#
+			</isPropertyAvailable>
+    </select>
+    
+    <select id = "Articulo.web.findAllSiteMap" resultMap = "Articulo" cacheModel="Articulo-Cache">
+    	<include refid="Articulo.web.select"/>
+    	WHERE
+			 art.activo = 1 AND
+			 DATE_FORMAT(art.fecha, '%Y%m%d') <![CDATA[<=]]> DATE_FORMAT(#fecha,handler=calendar#, '%Y%m%d')   
+			 ORDER BY art.fecha DESC 
+    </select>
+    
+    <update id = "Articulo.web.actualizarCantidad">
+    	UPDATE 
+    		articulos 
+    	SET 
+    		cantidad = #cantidad# 
+    	WHERE 
+    		id = #id#
+    </update>
+    
+    <update id = "Articulo.web.actualizarVenta">
+    	UPDATE 
+    		articulos 
+    	SET 
+    		ventas = #cantidad# 
+    	WHERE 
+    		id = #id#
+    </update>
+    
+</sqlMap>

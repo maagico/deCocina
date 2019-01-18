@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+  
+    <definition name="template-web" template="/WEB-INF/tile/web/template-web.jsp">
+    	<put-attribute name="title-web" 		 value="/WEB-INF/tile/web/title-web.jsp"/>
+    	<put-attribute name="meta-web" 		     value="/WEB-INF/tile/web/meta-web.jsp"/>
+    	<put-attribute name="resources-up-web-comun" value="/WEB-INF/tile/web/resources-up-web-comun.jsp"/>
+    	<put-attribute name="resources-up-web"   value="/WEB-INF/tile/web/resources-up-web.jsp"/>
+        <put-attribute name="header-web" 	     value="/WEB-INF/tile/web/header-web.jsp"/>
+        <put-attribute name="body-web"   	     value="/WEB-INF/tile/web/body-web.jsp" />
+        <put-attribute name="body-columna-derecha-web"   value="/WEB-INF/tile/web/body-columna-derecha-web.jsp"/>
+        <put-attribute name="footer-web" 	     value="/WEB-INF/tile/web/footer-web.jsp"/>
+        <put-attribute name="resources-down-web-comun" value="/WEB-INF/tile/web/resources-down-web-comun.jsp"/>
+    	<put-attribute name="resources-down-web" value="/WEB-INF/tile/web/resources-down-web.jsp"/>
+    </definition>
+    
+    <definition name="template-central-web" template="/WEB-INF/tile/web/template-central-web.jsp">
+    	<put-attribute name="title-web" 		 value="/WEB-INF/tile/web/title-web.jsp"/>
+    	<put-attribute name="meta-web" 		     value="/WEB-INF/tile/web/meta-web.jsp"/>
+    	<put-attribute name="resources-up-web-comun" value="/WEB-INF/tile/web/resources-up-web-comun.jsp"/>
+    	<put-attribute name="resources-up-web"   value="/WEB-INF/tile/web/resources-up-web.jsp"/>
+        <put-attribute name="header-web" 	     value="/WEB-INF/tile/web/header-web.jsp"/>
+        <put-attribute name="body-web"   	     value="/WEB-INF/tile/web/body-central-web.jsp" />
+        <put-attribute name="footer-web" 	     value="/WEB-INF/tile/web/footer-web.jsp"/>
+        <put-attribute name="resources-down-web-comun" value="/WEB-INF/tile/web/resources-down-web-comun.jsp"/>
+    	<put-attribute name="resources-down-web" value="/WEB-INF/tile/web/resources-down-web.jsp"/>
+    </definition>
+  
+  	<definition name="template-central-admin" template="/WEB-INF/tile/admin/template-central-admin.jsp">
+    	<put-attribute name="meta-admin" 		   		 value="/WEB-INF/tile/admin/meta-admin.jsp"/>
+    	<put-attribute name="resources-up-admin-comun" value="/WEB-INF/tile/admin/resources-up-admin-comun.jsp"/>
+    	<put-attribute name="resources-up-admin"   		 value="/WEB-INF/tile/admin/resources-up-admin.jsp"/>
+        <put-attribute name="header-admin" 	       		 value="/WEB-INF/tile/admin/header-admin.jsp"/>
+        <put-attribute name="body-admin"   	       		 value="/WEB-INF/tile/admin/body-admin.jsp" />
+        <put-attribute name="footer-admin" 	       		 value="/WEB-INF/tile/admin/footer-admin.jsp"/>
+        <put-attribute name="resources-down-admin-comun" value="/WEB-INF/tile/admin/resources-down-admin-comun.jsp"/>
+    	<put-attribute name="resources-down-admin" 		 value="/WEB-INF/tile/admin/resources-down-admin.jsp"/>
+    </definition>
+    
+    <definition name="template-central-admin-404-sin-sesion" template="/WEB-INF/tile/admin/template-central-admin-404-sin-sesion.jsp">
+    	<put-attribute name="meta-admin" 		   		 value="/WEB-INF/tile/admin/meta-admin.jsp"/>
+    	<put-attribute name="resources-up-admin-comun" value="/WEB-INF/tile/admin/resources-up-admin-comun.jsp"/>
+    	<put-attribute name="resources-up-admin"   		 value="/WEB-INF/tile/admin/resources-up-admin.jsp"/>
+        <put-attribute name="header-admin" 	       		 value="/WEB-INF/tile/admin/header-admin.jsp"/>
+        <put-attribute name="body-admin"   	       		 value="/WEB-INF/tile/admin/body-admin.jsp" />
+        <put-attribute name="footer-admin" 	       		 value="/WEB-INF/tile/admin/footer-admin.jsp"/>
+        <put-attribute name="resources-down-admin-comun" value="/WEB-INF/tile/admin/resources-down-admin-comun.jsp"/>
+    	<put-attribute name="resources-down-admin" 		 value="/WEB-INF/tile/admin/resources-down-admin.jsp"/>
+    </definition>
+    
+    <definition name="template-popup-admin" template="/WEB-INF/tile/admin/template-popup-admin.jsp">
+    	<put-attribute name="meta-admin" 		   		 value="/WEB-INF/tile/admin/meta-admin.jsp"/>
+    	<put-attribute name="resources-up-admin-comun" value="/WEB-INF/tile/admin/resources-up-admin-comun.jsp"/>
+    	<put-attribute name="body-admin" value="/WEB-INF/tile/admin/body-admin.jsp" />
+    	<put-attribute name="resources-down-admin-comun" value="/WEB-INF/tile/admin/resources-down-admin-comun.jsp"/>
+    	<put-attribute name="resources-down-admin" 		 value="/WEB-INF/tile/admin/resources-down-admin.jsp"/>
+   	</definition>
+  
+</tiles-definitions>

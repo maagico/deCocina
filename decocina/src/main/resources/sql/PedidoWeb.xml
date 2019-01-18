@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+    <typeAlias type = "es.cgarcia.decocina.web.model.Pedido" alias = "Pedido"/>
+    
+    <typeAlias type = "es.cgarcia.decocina.web.ibatis.BooleanTypeHandlerCallback"  alias="bol"/>
+	<typeAlias type = "es.cgarcia.decocina.web.ibatis.CalendarTypeHandlerCallback" alias="calendar" />
+		
+	<cacheModel id="Pedido-Cache" type ="LRU" readOnly="true">
+		
+		<flushOnExecute statement="Pedido.web.insert"/>
+	  	<flushOnExecute statement="Pedido.web.updateEstadoHistorial"/>
+	  	<flushOnExecute statement="Pedido.admin.borrarDatosPersonales"/>
+	  	<flushOnExecute statement="Pedido.admin.delete"/>
+	  	
+	</cacheModel>
+		
+	<resultMap class = "Pedido" id = "Pedido">
+    	<result property = "id"         column = "ped.id"/>
+    	<result property = "cliente.id" column = "cli.id"/>
+    	
+    	<result property = "nombreCliente" column = "ped.nombre_cliente"/>
+    	<result property = "nombreEmpresa" column = "ped.nombre_empresa"/>
+    	<result property = "pais" 		   column = "ped.pais"/>
+    	<result property = "zona" 		   column = "ped.zona"/>
+    	<result property = "poblacion" 	   column = "ped.poblacion"/>
+    	
+    	<result property = "codigoPostal" column = "ped.codigo_postal"/>
+    	<result property = "telefono" 	  column = "ped.telefono"/>
+    	
+    	<result property = "email" column = "ped.email"/>
+    	
+    	<result property = "nombreFormaPago" column = "ped.nombre_forma_pago"/>
+    	<result property = "precioFormaPago" column = "ped.precio_forma_pago"/>
+    	
+    	<result property = "descripcionFormaPago" column = "ped.descripcion_forma_pago"/>
+    	<result property = "comentarioFormaPago"  column = "ped.comentario_forma_pago"/>
+    	
+    	<result property = "nombreFormaEnvio" column = "ped.nombre_forma_envio"/>
+    	
+    	<result property = "descripcionFormaEnvio" column = "ped.descripcion_forma_envio"/>
+    	
+    	<result property = "precioFormaEnvio" column = "ped.precio_forma_envio"/>
+    	<result property = "pesoFormaEnvio"   column = "ped.peso_forma_envio"/>
+    	
+    	<result property = "fechaCreacion"     column = "fecha_creacion" javaType="java.util.Calendar" jdbcType="DATETIME" typeHandler="calendar"/>
+ 		<result property = "fechaModificacion" column = "fecha_modificacion" typeHandler="calendar"/>   	
+		
+		<result property = "ivaTotal" 	 column = "ped.iva_total"/>
+		<result property = "precioTotal" column = "ped.precio_total"/>
+		
+		<result property = "comentario"   column = "ped.comentario"/>
+		<result property = "codigoPostal" column = "ped.codigo_postal"/>
+	    	
+	    <result property = "cupon" 				 column = "ped.cupon"/>
+	    <result property = "descuento" 			 column = "ped.descuento"/>
+	    <result property = "porcentajeDescuento" column = "ped.porcentaje_descuento"/>
+	    
+	    <result property = "estadoHistorial.id" 		   	  column = "peh.id"/>
+	    <result property = "estadoHistorial.estado.id" 	   	  column = "est.id"/>
+	    <result property = "estadoHistorial.estado.nombre" 	  column = "est.nombre"/>
+	    <result property = "estadoHistorial.estado.descripcion" column = "est.descripcion"/>
+	    
+	    <result property = "precioTotalCesta" column = "ped.precio_total_cesta"/>
+	    <result property = "precioFormaEnvio" column = "ped.precio_forma_envio"/>
+	    
+	    <result property = "calle" 			column = "ped.calle"/>
+	    <result property = "observaciones"  column = "ped.observaciones"/>
+	    <result property = "ivaDireccion"   column = "ped.iva_direccion"/>
+	    
+	    <result property = "borrado" 		column = "ped.borrado" typeHandler = "bol"/>
+    </resultMap>  
+	
+	<sql id="Pedido.web.select">
+    	SELECT 
+			* 
+		FROM 
+			pedidos ped
+			INNER JOIN clientes cli ON (ped.cliente_id = cli.id)   
+			INNER JOIN pedido_estado_historial peh ON (ped.pedido_estado_historial_id = peh.id)
+			INNER JOIN estados est ON (peh.estado_id = est.id)	
+	</sql>
+	
+	<select id = "Pedido.web.findAllByIdCliente" resultMap = "Pedido" parameterClass = "HashMap">
+        <include refid="Pedido.web.select"/>
+        WHERE 
+        	ped.cliente_id = #id#
+        	ORDER BY ped.id DESC
+    </select>
+    
+    <select id = "Pedido.web.findByIdClienteAndIdPedido" resultMap = "Pedido" parameterClass = "HashMap">
+        <include refid="Pedido.web.select"/>
+        WHERE 
+        	ped.cliente_id = #idCliente# AND
+        	ped.id = #idPedido#
+    </select>
+	
+    <insert id = "Pedido.web.insert" >
+        INSERT INTO pedidos 
+        	(id, 
+        	 cliente_id, 
+        	 nombre_cliente,
+        	 nombre_empresa,
+        	 pais,
+        	 zona,
+        	 poblacion,
+        	 codigo_postal,
+        	 telefono,
+        	 email,
+        	 nombre_forma_pago,
+        	 precio_forma_pago,
+        	 descripcion_forma_pago,
+        	 comentario_forma_pago,
+        	 nombre_forma_envio,
+        	 descripcion_forma_envio,
+        	 precio_forma_envio,
+        	 fecha_creacion,
+        	 fecha_modificacion,
+        	 iva_total,
+        	 precio_total,
+        	 comentario,
+        	 pedido_estado_historial_id,
+        	 precio_total_cesta,
+        	 peso_forma_envio,
+        	 calle,
+        	 observaciones,
+        	 iva_direccion,
+        	 cupon,
+        	 descuento,
+        	 porcentaje_descuento
+        	) 
+        VALUES 
+        	(#id#, 
+        	 #cliente.id#, 
+        	 #nombreCliente#,
+        	 #nombreEmpresa#,
+        	 #pais#,
+        	 #zona#,
+        	 #poblacion#,
+        	 #codigoPostal#,
+        	 #telefono#,
+        	 #email#,
+        	 #nombreFormaPago#,
+        	 #precioFormaPago#,
+        	 #descripcionFormaPago#,
+        	 #comentarioFormaPago#,
+        	 #nombreFormaEnvio#,
+        	 #descripcionFormaEnvio#,
+        	 #precioFormaEnvio#,
+        	 #fechaCreacion,handler=calendar#,
+        	 #fechaModificacion,handler=calendar#,
+        	 #ivaTotal#,
+        	 #precioTotal#,
+        	 #comentario#,
+        	 #estadoHistorial.id#,
+        	 #precioTotalCesta#,
+        	 #pesoFormaEnvio#,
+        	 #calle#,
+        	 #observaciones#,
+        	 #ivaDireccion#,
+        	 #cupon#,
+        	 #descuento#,
+        	 #porcentajeDescuento#
+        	)
+        	
+       <selectKey keyProperty="id" resultClass="long">  
+          SELECT LAST_INSERT_ID() AS id  
+        </selectKey>
+        
+    </insert>
+	
+	<update id = "Pedido.web.updateEstadoHistorial">
+    	UPDATE 
+    		pedidos
+    	SET 
+    		pedido_estado_historial_id = #idPedidoEstadoHistorial#
+    	WHERE
+    		id = #idPedido#
+    </update>
+</sqlMap>

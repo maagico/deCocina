@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!DOCTYPE urlrewrite
+    PUBLIC "-//tuckey.org//DTD UrlRewrite 4.0//EN"
+    "http://www.tuckey.org/res/dtds/urlrewrite4.0.dtd">
+
+<urlrewrite>
+
+	<!--
+	Lo hace el modulo de Apache mod_speed
+	<rule>
+        <from>^.*\.(css|js|gif|jpeg|jpg|png)$</from>
+        <set type="expires">4 weeks</set>
+        <set type="response-header" name="Vary">Accept-Encoding</set>
+    </rule>
+    -->
+    
+    <!--
+	<rule>
+        <name>Articulo detalle</name>
+        <from>^(.*)-a-([0-9]*)$</from>
+        <to type="forward" >/articulo-detalle?id=$2</to>
+    </rule>
+	-->
+	
+	<rule> 
+        <name>Articulo con URL corta a URL amigable</name>
+        <from>^(.*)/a/([0-9]*)$</from>
+        <to type="forward" >/articulo-url-corta?id=$2</to>
+    </rule>
+	
+	<!-- 
+	<rule>
+        <name>Listado de articulos de una categoria</name>
+        <from>^(.*)-c-([0-9]*)$</from>
+        <to type="forward" >/articulos-categoria?idCat=$2</to>
+    </rule>
+	-->
+	  
+	<rule> 
+        <name>Js</name>
+        <from>(.*)/js/(.*)[^/tinymce/themes]/(.*).js</from>
+        <to type="forward">$1/js/$3.js</to>
+    </rule>
+    
+    <rule> 
+        <name>Css</name>
+        <from>(.*)/css/(.*)[^tinymce]/(.*).css</from>
+        <to type="forward">$1/css/$3.css</to>
+    </rule>
+	
+	<!-- 
+    <rule>
+       <from>^/Foo</from>
+       <to type="redirect">/very/newdir/$1</to>
+    </rule>
+	-->
+	
+</urlrewrite>

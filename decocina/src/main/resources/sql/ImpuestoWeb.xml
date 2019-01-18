@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+    <typeAlias type = "es.cgarcia.decocina.web.model.Impuesto" alias = "Impuesto"/>	
+    <typeAlias type = "es.cgarcia.decocina.web.ibatis.BooleanTypeHandlerCallback"  alias="bol"/>
+    
+	<cacheModel id="Impuesto-Cache" type ="LRU" readOnly="true">
+	  	
+	  	<flushOnExecute statement="Impuesto.admin.insert"/>
+	  	<flushOnExecute statement="Impuesto.admin.update"/>
+	  	<flushOnExecute statement="Impuesto.admin.delete"/>
+	  	
+	</cacheModel>
+		
+	<resultMap class = "Impuesto" id = "Impuesto">
+        <result property = "id" 		  column = "id"/>
+        <result property = "nombre" 	  column = "nombre"/>
+        <result property = "valor" 	 	  column = "valor"/>
+        <result property = "descripcion"  column = "descripcion"/>
+        <result property = "paraArticulo" column = "para_articulo" typeHandler = "bol"/>
+        <result property = "paraZona"     column = "para_zona" typeHandler = "bol"/>
+    </resultMap> 
+      
+</sqlMap>

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	
+	<sql id="Cupon.admin.select">
+    	SELECT 
+    		*
+		FROM
+			cupones cup
+	</sql>
+	
+	<sql id="Cupon.admin.select.count">
+
+		SELECT 
+			COUNT(*) 
+		FROM 
+			cupones cup
+ 	</sql>
+ 
+    <select id = "Cupon.admin.findById" resultMap = "Cupon" parameterClass = "HashMap">
+        <include refid="Cupon.admin.select"/>
+        WHERE 
+        	cup.id = #id#
+    </select>
+    
+    <sql id = "Cupon.admin.findAll.tail">
+		    
+        <isNull property = "isCount">
+	        
+	    	ORDER BY cup.id DESC
+	    	    
+	        <isPropertyAvailable property = "start">
+		        <isNotNull property="start">
+		        	LIMIT #start#, #limit# 
+		        </isNotNull>
+	        </isPropertyAvailable>
+        </isNull>
+	        	
+    </sql>
+    
+    <sql id = "Cupon.admin.findAllBusqueda.tail">
+                
+        <isNotNull property="nombre">
+        	<isNotEmpty property = "nombre">
+        		WHERE cup.nombre LIKE #nombre#
+        	</isNotEmpty>
+        </isNotNull>
+	    
+        <isNull property = "isCount">
+	        
+	        ORDER BY cup.id DESC 
+        	    
+	        <isPropertyAvailable property = "start">
+		        <isNotNull property="start">
+		        	limit #start#, #limit# 
+		        </isNotNull>
+	        </isPropertyAvailable>
+        </isNull>
+	        	
+    </sql>
+	
+	<select id = "Cupon.admin.findAll" resultMap = "Cupon" cacheModel="Cupon-Cache">
+    	
+    	<include refid="Cupon.admin.select"/>
+    	<include refid="Cupon.admin.findAll.tail"/>
+    	
+    </select>
+	
+    <select id = "Cupon.admin.findAllBusqueda" resultMap = "Cupon" cacheModel="Cupon-Cache">
+    	
+    	<include refid="Cupon.admin.select"/>
+    	<include refid="Cupon.admin.findAllBusqueda.tail"/>
+    	
+    </select>
+    
+    <select id = "Cupon.admin.countFindAllBusqueda" resultClass = "java.lang.Long" cacheModel="Cupon-Cache">
+    	
+    	<include refid="Cupon.admin.select.count"/>
+    	<include refid="Cupon.admin.findAllBusqueda.tail"/>
+    </select>
+	
+    <select id = "Cupon.admin.countFindAll" resultClass = "java.lang.Long" cacheModel="Cupon-Cache">
+    	
+    	<include refid="Cupon.admin.select.count"/>
+    	<include refid="Cupon.admin.findAll.tail"/>
+    </select>
+	
+	<insert id = "Cupon.admin.insert">
+    	
+    	INSERT INTO 
+    		cupones (id, nombre, descuento, fecha_desde, fecha_hasta, precio_minimo, numero_usos, tipo_importe, descripcion)
+    	VALUES(
+    		#id#, #nombre#, #descuento#, 
+    		
+    		<isNull property = "fechaDesde">
+    			#fechaDesde#,
+    		</isNull>
+    		<isNotNull property = "fechaDesde">
+    			#fechaDesde,handler=calendar#,
+    		</isNotNull>
+    		
+    		<isNull property = "fechaHasta">
+    			#fechaHasta#,
+    		</isNull> 
+    		<isNotNull property = "fechaHasta">
+    			#fechaHasta,handler=calendar#,
+    		</isNotNull>
+    		
+    		#precioMinimo#, #numeroUsos#, #tipoImporte#, #descripcion#	
+    	)
+    	
+    	<selectKey keyProperty="id" resultClass="long">  
+          SELECT LAST_INSERT_ID() AS id  
+        </selectKey>
+    	
+    </insert>
+	
+	<update id = "Cupon.admin.update">
+		UPDATE cupones SET 
+			nombre 			= #nombre#,
+			descuento 	    = #descuento#,
+						
+			<isNull property = "fechaDesde">
+    			fecha_desde     = #fechaDesde#,
+    		</isNull>
+    		
+    		<isNotNull property = "fechaDesde">
+    			fecha_desde     = #fechaDesde,handler=calendar#,
+    		</isNotNull>
+    		
+    		<isNull property = "fechaHasta">
+    			fecha_hasta     = #fechaHasta#,
+    		</isNull>
+    		<isNotNull property = "fechaHasta">
+    			fecha_hasta     = #fechaHasta,handler=calendar#,
+    		</isNotNull>			
+			
+			precio_minimo 	= #precioMinimo#,
+			numero_usos     = #numeroUsos#,
+			tipo_importe	= #tipoImporte#,
+			descripcion    	= #descripcion#
+		WHERE 
+			id = #id#
+	</update>
+		       
+    <delete id = "Cupon.admin.delete">
+		DELETE FROM cupones WHERE id = #id#
+	</delete>
+    
+</sqlMap>

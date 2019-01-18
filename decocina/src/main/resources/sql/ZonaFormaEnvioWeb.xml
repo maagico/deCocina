@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+    <typeAlias type = "es.cgarcia.decocina.web.model.ZonaFormaEnvio" alias = "ZonaFormaEnvio"/>
+		
+	<cacheModel id="ZonaFormaEnvio-Cache" type ="LRU" readOnly="true">
+		
+	  	<flushOnExecute statement="ZonaFormaEnvio.admin.insert"/>
+	  	<flushOnExecute statement="ZonaFormaEnvio.admin.update"/>
+	  	<flushOnExecute statement="ZonaFormaEnvio.admin.delete"/>
+	  	
+	  	<flushOnExecute statement="FormaEnvio.admin.insert"/>
+	  	<flushOnExecute statement="FormaEnvio.admin.update"/>
+	  	<flushOnExecute statement="FormaEnvio.admin.delete"/>
+	  	
+	</cacheModel>
+		
+	<resultMap class = "ZonaFormaEnvio" id = "ZonaFormaEnvio">
+        
+        <result property = "id" 	 	 column = "zfe.id"/>
+        
+        <result property = "zona.id" 	 column = "zon.id"/>
+        <result property = "zona.nombre" column = "zon.nombre"/>
+        
+        <result property = "formaEnvio.id"	        column = "foe.id"/>
+        <result property = "formaEnvio.nombre"	    column = "foe.nombre"/>
+        <result property = "formaEnvio.descripcion"	column = "foe.descripcion"/>
+        <result property = "formaEnvio.formula"		column = "foe.formula"/>
+        
+        <result property = "orden"   column = "zfe.orden"/>
+        
+    </resultMap>
+    
+    <sql id="ZonaFormaEnvio.web.select">
+		SELECT     
+			*    
+		FROM
+			zona_forma_envio zfe,          
+			zonas zon,
+			formas_envio foe
+	</sql>
+    
+    <select id = "ZonaFormaEnvio.web.findByIdZona" resultMap = "ZonaFormaEnvio" cacheModel="ZonaFormaEnvio-Cache">
+	 	<include refid="ZonaFormaEnvio.web.select"/> 
+			
+		WHERE     
+			zfe.zona_id = zon.id AND
+			zfe.forma_envio_id = foe.id AND
+			zon.id = #id#
+			
+    </select>      
+    
+</sqlMap>

@@ -1,0 +1,295 @@
+.thumbnail-alto{
+	height:230px;
+}
+
+.submenu-bottom-padding{
+	padding-bottom: 10px;
+}
+
+.no-recuerdo{ 
+	padding-top:10px; 
+	font-size:85%;
+}
+
+.crear-cuenta{
+	padding-top:15px; 
+	font-size:85%;
+}
+
+.form-sesion{
+	padding-top:10px;
+}
+
+.form-sesion-input{
+	margin-bottom: 25px;
+}
+
+.botones-iniciar-sesion{
+	margin-top:10px;
+}
+
+.boton-iniciar-sesion{
+	margin-bottom:10px;
+}
+
+.cesta-cantidad{
+	width:120px;
+}
+
+.panel-admin-login{
+	margin-top:50px;
+}
+
+.borde-superior-blanco{
+		
+}
+
+.color-precio-articulo{
+	color:#990000; 
+	font-weight: bold;
+}
+
+.alto-nombre-articulo{
+	height:90px;
+}
+
+.imagen-articulo-bottom{
+	margin-bottom:10px
+}
+
+.titulo{
+	font-size: 150%;
+	margin-top:3px;
+}
+
+.en-stock{
+	color:green;
+	font-weight: bold;
+}
+
+.sin-stock{
+	color:red;
+	font-weight: bold;
+}
+
+.precio-stock{
+	font-size:16px;
+}
+
+.cesta-pedido{
+	text-align:right;	
+}
+
+.ver-cesta{
+	margin-right:10px	
+}
+
+.iniciar-sesion{
+	margin-right:10px	
+}
+
+.form-alta-campo-ok input{
+	border: 1px green solid;
+}
+
+.form-alta-campo-error{
+	color:#a94442;
+	font-weight: bold;
+}
+
+.cesta-margin-left{
+	margin-left:10px;
+}
+
+.form-error{
+	color: #a94442;
+	font-weight: bold;
+}
+
+.error-login {
+    color: #a94442;
+    font-weight: bold;
+}
+
+.mi-cuenta{
+	margin-right:11px;
+}
+
+.realizar-pedido{
+	margin-right:11px;
+}
+
+.titulo-panel{
+	font-weight: bold;
+}
+
+.articulo-cesta{
+}
+
+.espera-subtotal{
+	display: none;
+}
+
+.espera-total{
+	display: none;
+}
+
+.img-espera{
+	visibility: hidden;
+}
+
+.panel-realizar-pedido{
+	display:block;	
+	margin-bottom:1px;
+}
+
+.cupon-block{
+	margin-bottom:11px;
+	display:block;	
+}
+
+.cupon-input-block{
+	display:block;	
+}
+
+.panel-display-none{
+	display:none;
+}
+
+.precio-realizar-pedido{
+	font-weight: bold;
+}
+
+.precio-confirmar-pedido{
+	color:green;
+	font-weight: bold;
+}
+
+.descripcion-forma-pago{
+	display:block;
+	font-size: 12px;
+}
+
+.no-hay-articulos{
+	font-weight: bold;
+	color:green;
+	font-size: 14px;
+}
+
+.cesta-ancho-select{
+	width:200px;
+}
+
+.strong { 
+    font-weight: bold;
+}
+
+.info-empresa{
+	font-size:12px;	
+}
+
+.info-iva{
+	font-size:12px;
+	color:green;	
+}
+
+.panel-info-footer{
+	background-color: #f5f5f5;
+}
+
+.info-quienes-somos{
+	margin-top:40px	
+}
+
+.info-proteccion-datos{
+	margin-right:3px	
+}
+
+.info-condiciones-uso{
+	margin-right:5px	
+}
+
+.cookies {
+    background: black;
+    bottom: 0;
+    color: white;
+    font-size: 14px;
+    left: 0;
+    position: fixed;
+    text-align: left;
+    width: 100%;
+    z-index: 9999;
+    padding:10px;
+    opacity: 1;
+}
+
+.index-titulo{
+	
+	margin-top:0px;
+	margin-left:29px;
+}
+
+.navbar-default {
+    
+    background-color: #FFFFFF;
+    border-color: #E7E7E7;
+}
+
+.panel-heading {
+	
+	background-color: #FFFFFF!important;
+	border-color: #E7E7E7;
+}
+
+.breadcrumb {
+		
+	background-color: #FFFFFF;
+    border: 1px solid #E7E7E7;
+}
+
+.panel-custom{
+	
+	border-bottom:1px solid #e7e7e7;
+}
+
+.ancho-combo-cesta{
+	width:width:230px;
+}
+
+@media screen and (max-width: 768px) {
+	
+	 .precio-stock-text-align {
+	 	text-align: center;
+	}
+	
+	.cesta-pedido{
+		text-align:center;	
+	}
+	
+	
+	#miga.breadcrumb > li+li:nth-last-child(1):before {
+    	content: " ";
+	}
+	
+	.index-titulo{
+	
+		margin-top:1px;
+		margin-left:10px;
+	
+	}
+}
+
+@media screen and (min-width: 1024px) { 
+	
+	.width-utensilios{
+		width:600px;
+	}
+}
+
+@media screen and (min-width: 1200px) { 
+	
+	.width-utensilios{
+		width:750px;
+	}
+}
+

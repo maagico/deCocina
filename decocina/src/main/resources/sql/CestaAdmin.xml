@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+    <typeAlias type = "es.cgarcia.decocina.web.model.Cesta" alias = "Cesta"/>
+	
+	<cacheModel id="Cesta-Cache" type ="LRU" readOnly="true">
+		
+	  	<flushOnExecute statement="Cesta.web.insert"/>
+	  	<flushOnExecute statement="Cesta.web.deleteByIdClienteAndIdArticulo"/>
+	  	<flushOnExecute statement="Cesta.web.deleteByIdCliente"/>
+	  	<flushOnExecute statement="Cesta.web.actualizarCantidad"/>
+	  
+	  	<flushOnExecute statement="Cesta.admin.deleteByIdCliente"/>
+	  	<flushOnExecute statement="Cesta.admin.deleteByIdArticulo"/>
+	  	
+	</cacheModel>
+		
+	<resultMap class = "Cesta" id = "Cesta">
+        
+        <result property = "id"			 column = "id"/>
+        <result property = "cliente.id"  column = "cliente_id"/>
+        <result property = "articulo.id" column = "articulo_id"/>
+        <result property = "cantidad" 	 column = "cantidad"/>
+    	 
+   	</resultMap>
+	
+	<delete id = "Cesta.admin.deleteByIdCliente">
+        DELETE FROM 
+        	cestas 
+        WHERE 
+        	cliente_id = #idCliente#
+    </delete>
+    
+    <delete id = "Cesta.admin.deleteByIdArticulo">
+        DELETE FROM 
+        	cestas 
+        WHERE 
+        	articulo_id = #idArticulo#
+    </delete>
+    
+</sqlMap>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	
+	<sql id="Zona.admin.select">
+    	SELECT     
+			*    
+		FROM     
+			zonas zon     
+			LEFT JOIN zonas zpa ON (zon.zona_padre_id = zpa.id)
+	</sql>
+    
+    <sql id="Zona.admin.select.count">
+
+		SELECT     
+			COUNT(*)    
+		FROM     
+			zonas zon     
+			LEFT JOIN zonas zpa ON (zon.zona_padre_id = zpa.id)
+ 	</sql>
+ 
+    <select id = "Zona.admin.findById" resultMap = "Zona" parameterClass = "HashMap">
+        <include refid="Zona.admin.select"/>
+        WHERE 
+        	zon.id = #id#
+    </select>
+    
+    <sql id = "Zona.admin.findAll.tail">
+		    
+        <isNull property = "isCount">
+	        
+	    	ORDER BY zon.id DESC
+	    	    
+	        <isPropertyAvailable property = "start">
+		        <isNotNull property="start">
+		        	LIMIT #start#, #limit# 
+		        </isNotNull>
+	        </isPropertyAvailable>
+        </isNull>
+	        	
+    </sql>
+    
+    <sql id = "Zona.admin.findAllBusqueda.tail">
+                
+        <isNotNull property="nombre">
+        	<isNotEmpty property = "nombre">
+        		WHERE zon.nombre LIKE #nombre#
+        	</isNotEmpty>
+        </isNotNull>
+	    
+        <isNull property = "isCount">
+	        
+	        ORDER BY zon.nombre ASC 
+        	    
+	        <isPropertyAvailable property = "start">
+		        <isNotNull property="start">
+		        	limit #start#, #limit# 
+		        </isNotNull>
+	        </isPropertyAvailable>
+        </isNull>
+	        	
+    </sql>
+	
+	<select id = "Zona.admin.findAll" resultMap = "Zona" cacheModel="Zona-Cache">
+    	
+    	<include refid="Zona.admin.select"/>
+    	<include refid="Zona.admin.findAll.tail"/>
+    	
+    </select>
+	
+    <select id = "Zona.admin.findAllBusqueda" resultMap = "Zona" cacheModel="Zona-Cache">
+    	
+    	<include refid="Zona.admin.select"/>
+    	<include refid="Zona.admin.findAllBusqueda.tail"/>
+    	
+    </select>
+    
+    <select id = "Zona.admin.countFindAllBusqueda" resultClass = "java.lang.Long" cacheModel="Zona-Cache">
+    	
+    	<include refid="Zona.admin.select.count"/>
+    	<include refid="Zona.admin.findAllBusqueda.tail"/>
+    
+    </select>
+	
+    <select id = "Zona.admin.countFindAll" resultClass = "java.lang.Long" cacheModel="Zona-Cache">
+    	
+    	<include refid="Zona.admin.select.count"/>
+    	<include refid="Zona.admin.findAll.tail"/>
+    	
+    </select>
+    
+    <select id = "Zona.admin.findAllProvincias" resultMap = "Zona" cacheModel="Zona-Cache">
+    	
+    	<include refid="Zona.admin.select"/>
+    	WHERE 
+    		zon.zona_padre_id = 150
+    	
+    </select>
+    
+	<insert id = "Zona.admin.insert" parameterClass="Zona">
+        INSERT INTO zonas(
+        	 nombre,
+        	 zona_padre_id,
+        	 heredar_formas,
+        	 activa) 
+        VALUES(
+        	 #nombre#,
+        	 #zonaPadre.id#,
+        	 #heredarFormas#,
+        	 #activa,handler=bol#)
+        	 
+        <selectKey keyProperty="id" resultClass="long">  
+          	SELECT LAST_INSERT_ID() AS id  
+        </selectKey>
+    </insert>
+    
+    <update id = "Zona.admin.update" parameterClass="Zona">
+    	UPDATE 
+    		zonas 
+    	SET 
+    		nombre = #nombre#,
+    		zona_padre_id = #zonaPadre.id#,
+    		heredar_formas = #heredarFormas#,
+    		activa = #activa,handler=bol#
+        WHERE 
+        	id = #id#
+    </update>
+    
+    <update id = "Zona.admin.asignarPadre">
+    	UPDATE 
+    		zonas 
+    	SET 
+    		zona_padre_id = #idZonaPadre#
+        WHERE 
+        	id = #idZonaHija#
+    </update>
+    
+    <delete id = "Zona.admin.delete">
+        DELETE FROM zonas WHERE id = #id#
+    </delete>
+        
+</sqlMap>

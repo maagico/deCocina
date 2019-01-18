@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	
+	<sql id = "Imagen.admin.select">
+    	SELECT
+    		*
+		FROM
+			imagenes ima
+    </sql>
+	
+	<select id = "Imagen.admin.findAll" resultClass = "Imagen">
+    	
+    	<include refid="Imagen.admin.select"/>
+    
+    </select>
+	
+	<select id = "Imagen.admin.findById" resultClass = "Imagen" parameterClass = "HashMap">
+        
+        <include refid="Imagen.admin.select"/>
+        WHERE 
+        	ima.id = #id#
+        	
+    </select>
+	
+	<sql id = "Imagen.admin.findAllByType.tail">
+                
+        <dynamic prepend = "WHERE">
+        
+	        <isPropertyAvailable property="tipo">
+	        	<iterate prepend="AND" property="tipo" conjunction="OR" open ="(" close = ")">
+					ima.tipo = #tipo[]#
+				</iterate>
+	        </isPropertyAvailable>
+	        
+	        <isNotNull prepend = "AND" property="nombre">
+	        	<isNotEmpty property = "nombre">
+	        		ima.nombre LIKE #nombre#
+	        	</isNotEmpty>
+	        </isNotNull>
+	        
+        </dynamic>
+        
+        <isNull property = "isCount">
+	        
+	        <isPropertyAvailable property = "sort">
+        		<isNotNull property="sort">
+	    			order by id DESC
+	    		</isNotNull>
+        	</isPropertyAvailable>
+        	    
+	        <isPropertyAvailable property = "start">
+		        <isNotNull property="start">
+		        	limit #start#, #limit# 
+		        </isNotNull>
+	        </isPropertyAvailable>
+        
+        </isNull>
+                	
+    </sql>
+	
+	<select id="Imagen.admin.findAllByType" resultClass = "Imagen" parameterClass = "HashMap">
+    	
+    	<include refid="Imagen.admin.select"/>
+    	<include refid="Imagen.admin.findAllByType.tail"/>
+	
+	</select>
+	
+	<select id="Imagen.admin.countFindAllByType" resultClass = "java.lang.Long">
+    	
+    	SELECT
+    		COUNT(*)
+		FROM
+			imagenes ima
+		<include refid="Imagen.admin.findAllByType.tail"/>
+		
+	</select>
+	
+	<select id="Imagen.admin.findByIdArticulo" resultClass = "Imagen" parameterClass = "HashMap">
+    	
+    	<include refid="Imagen.admin.select"/>
+		WHERE 
+			articulo_id = #id#
+			
+	</select>
+	
+	<select id="Imagen.admin.findPrincipalByIdArticulo" resultClass = "Imagen" parameterClass = "HashMap">
+    	
+    	<include refid="Imagen.admin.select"/>
+		WHERE 
+			articulo_id = #id# AND
+			tipo = #tipo# AND 
+			principal = 1
+			
+	</select>
+	
+	<update id = "Imagen.admin.update" parameterClass = "Imagen">
+	
+		UPDATE imagenes SET
+			 title = #title#,
+			 uri = #uri#,
+			 alt = #alt#,
+			 nombre = #nombre#,
+			 tipo = #tipo#
+		WHERE 
+        	 id = #id#
+        	 
+    </update>
+    
+    <insert id = "Imagen.admin.insert" parameterClass = "Imagen">
+	
+		INSERT INTO imagenes (
+			articulo_id,
+			title,
+			uri,
+			alt,
+			nombre,
+			tipo,
+			principal)
+		VALUES(
+			#idArticulo#,
+			#title#,
+			#uri#,
+			#alt#,
+			#nombre#,
+			#tipo#,
+			#principal,handler=bol#)
+		
+        <selectKey keyProperty="id" resultClass="long">  
+        	SELECT LAST_INSERT_ID() AS id  
+        </selectKey>
+        	 
+    </insert>
+	
+	<delete id = "Imagen.admin.delete">
+		DELETE FROM 
+			imagenes
+		WHERE
+			id = #id#
+	</delete>
+	
+	<delete id = "Imagen.admin.deleteByIdArticulo">
+		DELETE FROM 
+			imagenes
+		WHERE
+			articulo_id = #id#
+	</delete>
+	
+</sqlMap>

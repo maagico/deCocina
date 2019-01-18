@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+    <sql id="Impuesto.admin.select">
+    	
+    	SELECT 
+    		*    	 	
+    	FROM 
+    	 	impuestos imp
+	</sql>
+	
+	<sql id="Impuesto.admin.select.count">
+
+		SELECT 
+			COUNT(*) 
+		FROM 
+    	 	impuestos imp
+ 	</sql>
+ 
+    <select id = "Impuesto.admin.findById" resultMap = "Impuesto" parameterClass = "HashMap"  cacheModel="Impuesto-Cache">
+        <include refid="Impuesto.admin.select"/>
+        WHERE 
+        	imp.id = #id#
+    </select>
+    
+	<sql id = "Impuesto.admin.findAll.tail">
+		    
+        <isNull property = "isCount">
+	        
+	    	ORDER BY imp.id DESC
+	    	    
+	        <isPropertyAvailable property = "start">
+		        <isNotNull property="start">
+		        	LIMIT #start#, #limit# 
+		        </isNotNull>
+	        </isPropertyAvailable>
+        </isNull>
+	        	
+    </sql>
+    
+    <sql id = "Impuesto.admin.findAllBusqueda.tail">
+                
+        <isNotNull property="nombre">
+        	<isNotEmpty property = "nombre">
+        		WHERE imp.nombre LIKE #nombre#
+        	</isNotEmpty>
+        </isNotNull>
+	    
+        <isNull property = "isCount">
+	        
+	        ORDER BY imp.id DESC 
+        	    
+	        <isPropertyAvailable property = "start">
+		        <isNotNull property="start">
+		        	limit #start#, #limit# 
+		        </isNotNull>
+	        </isPropertyAvailable>
+        </isNull>
+	        	
+    </sql>
+	
+	<select id = "Impuesto.admin.findAll" resultMap = "Impuesto" cacheModel="Impuesto-Cache">
+    	
+    	<include refid="Impuesto.admin.select"/>
+    	<include refid="Impuesto.admin.findAll.tail"/>
+    	
+    </select>
+	
+    <select id = "Impuesto.admin.findAllBusqueda" resultMap = "Impuesto" cacheModel="Impuesto-Cache">
+    	
+    	<include refid="Impuesto.admin.select"/>
+    	<include refid="Impuesto.admin.findAllBusqueda.tail"/>
+    	
+    </select>
+    
+    <select id = "Impuesto.admin.countFindAllBusqueda" resultClass = "java.lang.Long" cacheModel="Impuesto-Cache">
+    	
+    	<include refid="Impuesto.admin.select.count"/>
+    	<include refid="Impuesto.admin.findAllBusqueda.tail"/>
+    </select>
+	
+    <select id = "Impuesto.admin.countFindAll" resultClass = "java.lang.Long" cacheModel="Impuesto-Cache">
+    	
+    	<include refid="Impuesto.admin.select.count"/>
+    	<include refid="Impuesto.admin.findAll.tail"/>
+    </select>
+    
+    <select id = "Impuesto.admin.findAllByIdZona" resultMap = "Impuesto" cacheModel="Impuesto-Cache">
+    	
+    	SELECT 
+			*
+		FROM 
+			impuestos imp
+		WHERE 
+			imp.para_zona = 1 AND
+			 
+			imp.id NOT IN(
+				SELECT     
+					zim.impuesto_id    
+				FROM     
+					zona_impuestos zim
+				WHERE 
+					zim.zona_id = #id# 
+		) 
+		
+    </select>    
+    
+    <select id = "Impuesto.admin.findAllImpuestos" resultMap = "Impuesto" cacheModel="Impuesto-Cache">
+    	
+    	SELECT 
+			*
+		FROM 
+			impuestos imp
+		WHERE 
+			
+			<isNotNull property="paraArticulo">
+				imp.para_articulo = #paraArticulo#
+			</isNotNull>
+			
+			<isNotNull property="paraZona" prepend = "AND">
+				imp.para_zona     = #paraZona#
+    		</isNotNull>
+    		
+    </select>
+    
+	<insert id = "Impuesto.admin.insert" parameterClass="Impuesto">
+        INSERT INTO impuestos(
+        	 nombre,
+        	 valor,
+        	 descripcion,
+        	 para_articulo,
+        	 para_zona) 
+        VALUES(
+        	 #nombre#,
+        	 #valor#,
+        	 #descripcion#,
+        	 #paraArticulo#,
+        	 #paraZona#)
+        	 
+        <selectKey keyProperty="id" resultClass="long">  
+          	SELECT LAST_INSERT_ID() AS id  
+        </selectKey>
+    </insert>
+
+    <update id = "Impuesto.admin.update" parameterClass="Impuesto">
+    	UPDATE 
+    		impuestos 
+    	SET 
+    		nombre = #nombre#,
+    		valor = #valor#,
+    		descripcion = #descripcion#,
+    		para_articulo = #paraArticulo#,
+    		para_zona = #paraZona# 
+        WHERE 
+        	id = #id#
+    </update>
+    
+    <delete id = "Impuesto.admin.delete">
+        DELETE FROM impuestos WHERE id = #id#
+    </delete>
+    
+    <!--
+    <select id = "Impuesto.admin.findByIdZona" resultMap = "Impuesto" parameterClass = "HashMap">
+    
+		SELECT 
+			* 
+		FROM
+			impuestos imp, zona_impuestos zim
+		WHERE 
+			 imp.id = zim.impuesto_id AND
+			 zim.zona_id = #id#
+	</select>
+    -->
+    
+</sqlMap>

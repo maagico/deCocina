@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	
+	<sql id="PedidoEstadoHistorial.admin.select">
+    	SELECT 
+    		*    	 	
+    	FROM 
+    	 	pedido_estado_historial peh, 
+    	 	estados est, 
+    	 	pedidos ped
+	</sql>
+	
+	<select id = "PedidoEstadoHistorial.admin.findById" resultMap = "PedidoEstadoHistorial" parameterClass = "HashMap"  cacheModel="PedidoEstadoHistorial-Cache">
+        <include refid="PedidoEstadoHistorial.admin.select"/>
+        WHERE 
+        	peh.estado_id = est.id AND 
+        	peh.pedido_id = ped.id AND
+        	peh.id = #id#
+    </select>
+	
+	<select id = "PedidoEstadoHistorial.admin.findAllByIdPedido" resultMap = "PedidoEstadoHistorial" parameterClass = "HashMap"  cacheModel="PedidoEstadoHistorial-Cache">
+        <include refid="PedidoEstadoHistorial.admin.select"/>
+        WHERE 
+        	peh.estado_id = est.id AND 
+        	peh.pedido_id = ped.id AND
+        	peh.pedido_id = #id#
+        	ORDER BY fecha DESC
+    </select>
+	
+    <insert id = "PedidoEstadoHistorial.admin.insert">
+        
+        INSERT INTO pedido_estado_historial 
+        	(id,
+        	 pedido_id,
+        	 estado_id,
+        	 fecha,
+        	 cliente_notificado,
+        	 comentario
+        	) 
+        VALUES 
+        	(#id#,
+        	 #pedido.id#,
+        	 #estado.id#,
+        	 #fecha,handler=calendar#,
+        	 #clienteNotificado#,
+        	 #comentario#
+        	)
+        	
+       <selectKey keyProperty="id" resultClass="long">  
+          SELECT LAST_INSERT_ID() AS id  
+       </selectKey>
+        
+     </insert>
+     
+     <delete id = "PedidoEstadoHistorial.admin.delete">
+     	DELETE FROM pedido_estado_historial	WHERE id = #id#
+     </delete>
+     
+     <delete id = "PedidoEstadoHistorial.admin.deleteAllByIdPedido">
+     	DELETE FROM pedido_estado_historial	WHERE pedido_id = #id#
+     </delete>
+     
+</sqlMap>

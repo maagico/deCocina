@@ -1,0 +1,252 @@
+<html>
+	<head>
+		
+		<meta charset="utf-8">
+		
+	</head>
+	
+	<body>
+		
+		<div>
+			
+			<table style ="width: 100%;font-family: Arial;font-size: 14px;font-weight: bold;">
+			
+				<tr>
+					<td style ="text-align:center;height:40px;font-size: 22px">
+						<a href="http://www.decocina.es" style="text-decoration: none;color: black;">
+							deCocina
+						</a>
+					</td>
+				</tr>
+				
+				<tr style="height:10px;">
+				</tr>
+					
+			</table>
+				
+			<table style ="width: 100%;font-family: Arial;font-size: 14px;color:black">
+			
+				<tr>
+					<td style ="background-color: #f5f5f5;text-align:left;height:40px">
+						<span style="font-size: 18px;margin-left: 5px;font-weight: bold;">Información del pedido</span>
+					</td>
+				</tr>
+				
+				<tr style="height:10px;">
+				</tr>
+				
+				<tr>
+					<td style="text-align:left;">
+						Número de pedido: ${pedido.id} 
+					</td>
+				</tr>
+				<tr>
+					<td style="text-align:left;">
+						Fecha del pedido: ${fechaCreacion}
+					</td>
+				</tr>
+				<tr style="height: 10px;">
+				</tr>
+					
+			</table>
+			
+			<table style="width: 100%;font-family: Arial;font-size: 14px;color:black">
+				
+				<tr>
+					<td style="background-color: #f5f5f5; text-align: left;height:40px">
+						<span style="font-size: 18px;margin-left: 5px;font-weight: bold;">
+							Dirección de entrega
+						</span>
+					</td>
+				</tr>
+				
+				<tr style="height: 10px;">
+				</tr>
+				
+				<tr>
+					<td style="text-align:left;">
+						<span>
+							${pedido.nombreCliente}
+						</span>
+						<br>
+						<span>
+							${pedido.calle}
+						</span>
+						<br>
+						<span>
+							${pedido.poblacion}
+						</span>
+						<br>
+						<span>
+							${pedido.codigoPostal} ${pedido.zona} ${pedido.pais}
+						</span>
+						<br>
+						<br>
+						<#if paraVentas>
+							<span>
+								${pedido.telefono}
+							</span>
+							<br>
+							<span>
+								${pedido.email}
+							</span>
+						</#if>
+					</td>
+				</tr>
+				
+				<tr style="height: 10px;">
+				</tr>
+			
+			</table>
+			
+			<table style="font-family: Arial;font-size: 14px;width: 100%;color:black">
+				
+				<tr style="height: 40px;">
+					<td colspan="5" style="background-color: #f5f5f5;text-align:left">
+						<span style="font-size: 18px;margin-left: 5px;font-weight: bold;">Artículos</span>
+					</td>
+				</tr>
+				
+				<#list pedido.articulosPedido as articulo>
+				
+					<tr valign="top">
+						<td>
+							<img width = "45px" src="${host}${articulo.uri}" style="border-style: solid;border-width: 1px;border-color: lightgray;">
+						</td>
+						<td style = "text-align:left;">${articulo.cantidad} x ${articulo.articulo.nombre}</td>
+						<td colspan="2" style = "text-align:right;">${articulo.cantidad}x<strong>${articulo.articulo.precio?string(".00")}€</strong></td>
+						<td style = "text-align:right"><span style="color: green;font-weight: bold;">${articulo.precioTotal}€</span></td>
+					</tr>
+					
+				</#list>
+				
+				<tr valign="top">
+					<td colspan="4" style="text-align: right;">
+						<span>
+							<strong>subtotal:</strong>
+						</span>
+					</td>
+					<td style="text-align: right;">
+						<span style="color:green;font-weight: bold;">
+							${pedido.precioTotalCesta}€
+						</span>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="5">
+					&nbsp;
+					</td>
+				</tr>
+				<tr valign="top">
+					<td colspan="4" style="text-align: right;">
+						<span style="margin-right: 10px;">${pedido.nombreFormaEnvio}:</span>
+					</td>
+					<td style="text-align: right;">
+						<span style="color: green;font-weight: bold;">${pedido.precioFormaEnvio}€</span>
+					</td>
+				</tr>
+				<tr valign="top">
+					<td colspan="4" style="text-align: right;">
+						<span style="margin-right: 10px;">${pedido.nombreFormaPago}:</span>
+					</td>
+					<td style="text-align: right;">
+						<span style="color: green;font-weight: bold;">${pedido.precioFormaPago}€</span>
+					</td>
+				</tr>
+				<tr valign="top">
+					<td colspan="4" style="text-align: right;">
+						${impuestosPlantilla}
+					</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td colspan="5">
+						&nbsp;
+					</td>
+				</tr>
+				<tr valign="top">
+					<td colspan="4" style="text-align: right;">
+						<span><strong>Total:</strong></span>
+					</td>
+					<td style="text-align: right;">
+						<span style=";color: green;font-weight: bold;">${pedido.precioTotal}€</span>
+					</td>
+				</tr>
+				
+			</table>
+			
+			<#if pedido.comentarioFormaPago != "">
+				
+				<table style="font-family: Arial;font-size: 14px;width: 100%;color:black">
+					
+					<tr>
+						<td colspan="5">
+							&nbsp;
+						</td>
+					</tr>
+					
+					<tr style="height: 40px;">
+						<td style="background-color: #f5f5f5;text-align:left">
+							<span style="font-size: 18px;margin-left: 5px;font-weight: bold;">Datos del pago</span>
+						</td>
+					</tr>
+					<tr style="height: 10px;">
+					</tr>
+					<tr>
+						<td style = "text-align:left">
+							<span>
+								${pedido.comentarioFormaPago}
+							</span>
+						</td>
+					</tr>
+					
+				</table>
+				
+			</#if>
+			
+			<#if pedido.observaciones != "">	
+				
+				<table style="font-family: Arial;font-size: 14px;width: 100%;color:black">
+					
+					<tr>
+						<td colspan="5">
+							&nbsp;
+						</td>
+					</tr>
+					
+					<tr style="height: 40px;">
+						<td style="background-color: #f5f5f5;text-align:left">
+							<span style="font-size: 18px;margin-left: 5px;font-weight: bold;">Observaciones</span>
+						</td>
+					</tr>
+					<tr style="height: 10px;">
+					</tr>
+					<tr>
+						<td style = "text-align:left">
+							<span>
+								${pedido.observaciones}
+							</span>
+						</td>
+					</tr>
+					
+				</table>
+				
+			</#if>
+			
+			<table style="width: 100%;color:black;margin-top:10px;font-size:14px">
+				<tr>
+					<td style="background-color: #f5f5f5;text-align:left">
+						Si tienes alguna duda sobre el pedido ponte en contacto con nosotros respondiendo a este correo,
+						o por teléfono, en el número 91 123 45 67.
+					<td>
+				<tr>
+			</table>
+			
+			<div style="font-family: Arial, Helvetica, sans-serif;font-size: 12px;text-align: center;margin-top: 50px;color:black">
+				deCocina pertenece a la empresa deCocina S.L. CIF: B12345678 <br>
+				Calle del Manojo de Rosas 1, 28015 Madrid
+			</div>
+		</div>
+		
+	</body>
+</html>

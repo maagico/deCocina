@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+    <typeAlias type = "es.cgarcia.decocina.web.model.Categoria" alias = "Categoria"/>
+	<typeAlias type = "es.cgarcia.decocina.web.ibatis.BooleanTypeHandlerCallback" alias="bol"/>	
+	
+	<cacheModel id="Categoria-Cache" type ="LRU" readOnly="true">
+		
+		<flushOnExecute statement="Categoria.admin.insert"/>
+	  	<flushOnExecute statement="Categoria.admin.update"/>
+	  	<flushOnExecute statement="Categoria.admin.delete"/>
+	  	
+	</cacheModel>
+		
+	<resultMap class = "Categoria" id = "Categoria">
+	
+    	<result property = "id" 			 column = "cat.id"/>
+    	<result property = "metaDescripcion" column = "cat.meta_descripcion"/>
+    	<result property = "metaKeywords" 	 column = "cat.meta_keywords"/>
+    	<result property = "descripcion" 	 column = "cat.descripcion"/>
+    	<result property = "nombre" 		 column = "cat.nombre"/>
+    	<result property = "orden" 			 column = "cat.orden"/>
+    	<result property = "urlAmigable" 	 column = "cat.url_amigable"/>
+    	<result property = "activa"  		 column = "cat.activa" typeHandler = "bol"/>
+    	<result property = "idPadre" 		 column = "cat.id_padre"/>
+    	
+    </resultMap>  
+    
+    <sql id = "Categoria.web.select">
+    	SELECT *
+		FROM
+		 	categorias cat
+	</sql>  
+    
+    <select id = "Categoria.web.findAll" resultMap = "Categoria" parameterClass = "HashMap">
+        <include refid="Categoria.web.select"/>
+        WHERE 
+        	cat.activa = 1 
+    </select>
+    
+    <select id = "Categoria.web.findById" resultMap = "Categoria" parameterClass = "HashMap">
+        <include refid="Categoria.web.select"/>
+        WHERE 
+        	cat.id = #id# AND
+        	cat.activa = 1 
+    </select>
+    
+    <select id = "Categoria.web.findByURL" resultMap = "Categoria" parameterClass = "HashMap">
+        <include refid="Categoria.web.select"/>
+        WHERE 
+        	cat.url_amigable = #url# AND 
+        	cat.activa = 1 
+    </select>
+    
+    <select id = "Categoria.web.findByIdPadre" resultMap = "Categoria" parameterClass = "HashMap" cacheModel="Categoria-Cache">
+	
+        <include refid="Categoria.web.select"/>
+		
+		<dynamic prepend="WHERE">
+			
+			cat.activa = 1 AND  
+			
+			<isNull property="id" prepend = "AND">
+				cat.id_padre IS NULL
+			</isNull>
+				
+			<isNotNull property="id" prepend = "AND">
+				cat.id_padre = #id#
+			</isNotNull>
+			
+			<isNull property="id">
+				ORDER BY cat.orden
+			</isNull>
+			
+			<isNotNull property="id">
+				ORDER BY cat.nombre
+			</isNotNull>
+		</dynamic>	
+		
+    </select>
+    
+    <select id = "Categoria.web.findAllSiteMap" resultMap = "Categoria" parameterClass = "HashMap">
+        <include refid="Categoria.web.select"/>
+        WHERE 
+        	cat.activa = 1
+    </select>
+    
+</sqlMap>

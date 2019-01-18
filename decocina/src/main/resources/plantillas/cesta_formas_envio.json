@@ -1,0 +1,13 @@
+<#setting locale="es_ES">
+<#setting number_format="0.##">
+
+{
+	"formasEnvio":[
+	<#list zonaFormasEnvio as zonaFormaEnvio>
+		{
+			"id":${zonaFormaEnvio.formaEnvio.id?string},
+			"nombre":"${zonaFormaEnvio.formaEnvio.nombre}"
+		}<#if zonaFormaEnvio_has_next>,</#if>
+	</#list>
+	]
+}

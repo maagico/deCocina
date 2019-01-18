@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+	<sql id="FormaPago.admin.select">
+    	SELECT 
+    		*    	 	
+    	FROM 
+    	 	formas_pago fop 
+	</sql>
+	
+	<sql id="FormaPago.admin.select.count">
+
+		SELECT 
+			COUNT(*) 
+		FROM 
+			formas_pago fop
+ 	</sql>
+ 
+    <select id = "FormaPago.admin.findById" resultMap = "FormaPago" parameterClass = "HashMap"  cacheModel="FormaPago-Cache">
+        <include refid="FormaPago.admin.select"/>
+        WHERE 
+        	fop.id = #id#
+    </select>
+    
+    <sql id = "FormaPago.admin.findAll.tail">
+		    
+        <isNull property = "isCount">
+	        
+	    	ORDER BY fop.id DESC
+	    	    
+	        <isPropertyAvailable property = "start">
+		        <isNotNull property="start">
+		        	LIMIT #start#, #limit# 
+		        </isNotNull>
+	        </isPropertyAvailable>
+        </isNull>
+	        	
+    </sql>
+    
+    <sql id = "FormaPago.admin.findAllBusqueda.tail">
+                
+        <isNotNull property="nombre">
+        	<isNotEmpty property = "nombre">
+        		WHERE fop.nombre LIKE #nombre#
+        	</isNotEmpty>
+        </isNotNull>
+	    
+        <isNull property = "isCount">
+	        
+	        ORDER BY fop.id DESC 
+        	    
+	        <isPropertyAvailable property = "start">
+		        <isNotNull property="start">
+		        	limit #start#, #limit# 
+		        </isNotNull>
+	        </isPropertyAvailable>
+        </isNull>
+	        	
+    </sql>
+	
+	<select id = "FormaPago.admin.findAll" resultMap = "FormaPago" cacheModel="FormaPago-Cache">
+    	
+    	<include refid="FormaPago.admin.select"/>
+    	<include refid="FormaPago.admin.findAll.tail"/>
+    	
+    </select>
+	
+    <select id = "FormaPago.admin.findAllBusqueda" resultMap = "FormaPago" cacheModel="FormaPago-Cache">
+    	
+    	<include refid="FormaPago.admin.select"/>
+    	<include refid="FormaPago.admin.findAllBusqueda.tail"/>
+    	
+    </select>
+    
+    <select id = "FormaPago.admin.countFindAllBusqueda" resultClass = "java.lang.Long" cacheModel="FormaPago-Cache">
+    	
+    	<include refid="FormaPago.admin.select.count"/>
+    	<include refid="FormaPago.admin.findAllBusqueda.tail"/>
+    </select>
+	
+    <select id = "FormaPago.admin.countFindAll" resultClass = "java.lang.Long" cacheModel="FormaPago-Cache">
+    	
+    	<include refid="FormaPago.admin.select.count"/>
+    	<include refid="FormaPago.admin.findAll.tail"/>
+    </select>
+	
+	<select id = "FormaPago.admin.findByNombre" resultMap = "FormaPago" parameterClass = "HashMap" cacheModel="FormaPago-Cache">
+       <include refid="FormaPago.admin.select"/>
+        WHERE
+			fop.nombre LIKE #nombre#    
+	</select>
+    
+    <select id = "FormaPago.admin.findAllByIdZonaAndIdFormaEnvio" resultMap = "FormaPago" cacheModel="FormaPago-Cache">
+    	
+    	SELECT 
+			*
+		FROM 
+			formas_pago fop
+		WHERE 
+			fop.id NOT IN(
+					
+					SELECT     
+						fefp.forma_pago_id    
+					FROM     
+						formas_envio_formas_pago fefp
+					WHERE 
+						fefp.zona_id = #id# AND
+						fefp.forma_envio_id = #idFormaEnvio# 
+		)
+		
+    </select>      
+    
+	<insert id = "FormaPago.admin.insert" parameterClass="FormaPago">
+        INSERT INTO formas_pago(
+        	 nombre,
+        	 descripcion,
+        	 formula,
+        	 comentario,
+        	 paso_adicional,
+        	 url,
+        	 nombre_boton,
+        	 test) 
+        VALUES(
+        	 #nombre#,
+        	 #descripcion#,
+        	 #formula#,
+        	 #comentario#,
+        	 #pasoAdicional,handler=bol#,
+        	 #url#,
+        	 #nombreBoton#,
+        	 #test,handler=bol#)
+        	 
+        <selectKey keyProperty="id" resultClass="long">  
+          	SELECT LAST_INSERT_ID() AS id  
+        </selectKey>
+    </insert>
+
+    <update id = "FormaPago.admin.update" parameterClass="FormaPago">
+    	UPDATE 
+    		formas_pago
+    	SET 
+    		nombre = #nombre#,
+    		descripcion = #descripcion#,
+    		formula = #formula#,
+    		comentario = #comentario#,
+    		paso_adicional = #pasoAdicional,handler=bol#,
+    		url = #url#,
+    		nombre_boton = #nombreBoton#,
+    		test = #test,handler=bol#
+        WHERE 
+        	id = #id#
+    </update>
+	
+	 <delete id = "FormaPago.admin.delete">
+        DELETE FROM formas_pago WHERE id = #id#
+    </delete>
+    
+</sqlMap>
