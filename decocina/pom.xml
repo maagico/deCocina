@@ -28,7 +28,7 @@
     	
   </build>
   
-  <dependencies> 
+  <dependencies>  
   	
 	  	<dependency>
 			<groupId>junit</groupId>
