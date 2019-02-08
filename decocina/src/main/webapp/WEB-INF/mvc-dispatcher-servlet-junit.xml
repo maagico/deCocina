@@ -1,3 +1,4 @@
+ç
 <beans xmlns="http://www.springframework.org/schema/beans"
 	   xmlns:context="http://www.springframework.org/schema/context"
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -33,7 +34,7 @@
         <property name="driverClassName" value="org.gjt.mm.mysql.Driver"/>
         <property name="url" value="jdbc:mysql://127.0.0.1:3306/decocina"/>
         <property name="username" value="decocina"/>
-        <property name="password" value="oiefA!asFPSD"/>
+        <property name="password" value="decocina"/>
     </bean>
  	
 </beans>
